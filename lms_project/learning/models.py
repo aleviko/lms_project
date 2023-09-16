@@ -8,12 +8,12 @@ class Course(models.Model):  # Таблица курсов
     title = models.CharField(verbose_name='Название курса', max_length=30, unique=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Автор курса')
     # from django.conf import settings  (AUTH_USER_MODEL)
-    description = models.CharField(verbose_name='Описание курса', max_length=200, unique=True)
+    description = models.TextField(verbose_name='Описание курса', max_length=200)
+    # было уникальным в видео, обычным в пдф
     start_date = models.DateField(verbose_name='Старт курса')
     duration = models.PositiveIntegerField(verbose_name='Продолжительность')
     price = models.PositiveIntegerField(verbose_name='Цена', blank=True, default=0)
     count_lessons = models.PositiveIntegerField(verbose_name='Кол-во уроков')
-
 
     class Meta:
         verbose_name_plural = 'Курсы'
@@ -33,6 +33,9 @@ class Lesson(models.Model):
         verbose_name_plural = 'Уроки'
         verbose_name = 'Урок'
         ordering = ['course']
+
+    def __str__(self):
+        return f'{self.course}: Урок {self.name}'
 
 
 class Tracking(models.Model):
