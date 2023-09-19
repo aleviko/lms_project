@@ -20,8 +20,12 @@ class Course(models.Model):  # Таблица курсов
         verbose_name = 'Курс'
         ordering = ['title']
 
-    def __str__(self):
+    def __str__(self):  # Настройка представления по умолчанию
+        # - что показывать в таблице, если в learning/admin.py
+        # не переопределены списки полей
+        # @admin.register(Course)...
         return f'{self.title}: Старт {self.start_date}'
+
 
 
 class Lesson(models.Model):
