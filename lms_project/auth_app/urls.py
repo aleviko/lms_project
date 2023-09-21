@@ -3,6 +3,8 @@ from .views import *
 
 # список маршрутов. имя фиксированное
 # (шаблон пути, контроллер или вложенный список маршрутов)
+# представления для этих путей см. во views.py
+
 urlpatterns = [
     path('login/', login),
     path('register/', register),

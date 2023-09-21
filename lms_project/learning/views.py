@@ -3,21 +3,23 @@ from django.shortcuts import render
 
 
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
-def login(request):
-    return HttpResponse('Страница для входа пользователя на сайт')
+def index(request):
+    return HttpResponse('Список курсов')
 
 
-def register(request):
-    return HttpResponse('Страница для регистрации пользователя на сайте')
+def create(request):
+    return HttpResponse('Создание курса')
 
 
-def logout(request):
-    return HttpResponse('Это представление выполняет выход и редирект на страницу входа')
+def delete(request, course_id):
+    return HttpResponse(f'Удаление курса с id={course_id}')
 
 
-def change_password(request):
-    return HttpResponse('Обработчик изменения пароля пользователя')
+def detail(request, course_id):
+    return HttpResponse(f'Описание курса с id={course_id}')
+# проверки на существование записи нет?
+# переход по http://127.0.0.1:8000/courses/detail/4000/ при наличии кусов с id = 1,2 и 3 ошибку не вызывает
 
 
-def reset_password(request):
-    return HttpResponse('Обработчик сброса паорля пользователя')
+def enroll(request, course_id):
+    return HttpResponse(f'Запись на курс с id={course_id}')
