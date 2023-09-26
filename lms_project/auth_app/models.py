@@ -1,3 +1,4 @@
+# Структура данных приложения
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from .fuctions import get_timestamp_path_user
