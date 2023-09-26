@@ -1,10 +1,15 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render  # рендеринг шаблона
+from datetime import datetime  # для отображения года копирайта в подвале
+from .models import Course
 
 
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
 def index(request):
-    return HttpResponse('Список курсов')
+    # return HttpResponse('Список курсов')
+    courses = Course.objects.all()  # данные всех курсов
+    current_year = datetime.now().year
+    return render(request, context={'courdes': courses}, template_name='index.html')
 
 
 def create(request):
