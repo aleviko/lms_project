@@ -5,15 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Codeby - {% block title %}онлайн-курсы{% endblock %}</title>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <script defer src="https://cdnjs.cloudflare.com/ajax/"
+<!--    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">-->
+<!--    <script defer src="https://cdnjs.cloudflare.com/ajax/"></script>-->
 </head>
 <body>
     <header>
+        ОТЛАДКА header
         <nav class="header_container">
             <div class="logo_container">
                 <a class="logo" href="{% url 'index' %}">
-                    <img src="{% static 'img/logo.png' %}" alt="Лого сайта" title="Лого сайта">
+<!--                    <img src="{% static 'img/logo.png' %}" alt="Лого сайта" title="Лого сайта">-->
+                    <img src="{% static 'img/logo2.jpg' %}" alt="Лого сайта" title="Лого сайта">
                 </a>
                 <div class="describer">
                     <div class="title"><h2 translate="no">Codeby</h2></div>
@@ -27,21 +29,17 @@
                         <div class="submenu_profile" style="display: none;">
                             <div>
                                 <p class="fa fa-sign-out"></p>
-                                <!-- тут выпадаем в ошибку: "Reverse for 'logout' not found.
-                                'logout' is not a valid view function or pattern name."
-                                т.к. logout описан в auth_app/views.py, а мы работаем в части /courses/,
-                                т.е. с learning/views.py. Что где надо допрописать?-->
-                                <a ctyle="color: rgba(238, 68, 68, 0.83)" href="{% url 'logout' %}>Выход"</a>
+                                <!-- тут и далее со страницы /courses/ выпадал в ошибку:
+                                "Reverse for 'logout' not found.'logout' is not a valid view function or pattern name."
+                                Решил добавлением обратных путей в auth_apps/url.py, например:
+                                path('login/', login, name='login')-->
+                                <a style="color: rgba(238, 68, 68, 0.83)" href="{% url 'logout' %}>Выход"></a>
                             </div>
                         </div>
                     </div>
                     <div> <a href="{% url 'create' %}">Создать курс</a></div>
                 {% else %}
                     <div class="nav-toggle"><span></span></div>
-                    <!-- тут выпадаем в ошибку: "Reverse for 'login' not found.
-                    'login' is not a valid view function or pattern name."
-                    т.к. login описан в auth_app/views.py, а мы работаем в части /courses/,
-                    т.е. с learning/views.py. Что где надо допрописать?-->
                     <div class="login"><a href="{% url 'login' %}" style="color: #000">Вход</a></div>
                     <div class="register"><a href="{% url 'register' %}" style="color: #fff">Регистрация</a></div>
                 {% endif%}
@@ -49,14 +47,16 @@
         </nav>
     </header>
 <main>
+    ОТЛАДКА content-base.html
     {% block content %}{% endblock %} <!--Здесь шаблонизатор может вставлять блоки расширения
-    в нашем случае такой блок будет описан в index.html -->
+    в нашем случае такие блоки будут описаны в index.html и detail.html-->
+    ОТЛАДКА main
 </main>
 <footer>
     <div class="footer_container">
         <div class="logo">
             <div class="copyright-mark">
-                <p><img src="{% static 'img/logo.png' %}"alt="лого сайта" title="лого сайта"></img>
+                <p><img src="{% static 'img/logo.png' %}" alt="лого сайта" title="лого сайта">
                 <span class="title">Codeby</span> - онлайн-курсы</p>
             </div>
             <div>&copy; {{ current_year }} Все права защищены</div>

@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render  # рендеринг шаблона
 from datetime import datetime  # для отображения года копирайта в подвале
-from .models import Course
+from .models import Course  # получить доступ к таблице курсов
 
 
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
