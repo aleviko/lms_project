@@ -27,6 +27,10 @@
                         <div class="submenu_profile" style="display: none;">
                             <div>
                                 <p class="fa fa-sign-out"></p>
+                                <!-- тут выпадаем в ошибку: "Reverse for 'logout' not found.
+                                'logout' is not a valid view function or pattern name."
+                                т.к. logout описан в auth_app/views.py, а мы работаем в части /courses/,
+                                т.е. с learning/views.py. Что где надо допрописать?-->
                                 <a ctyle="color: rgba(238, 68, 68, 0.83)" href="{% url 'logout' %}>Выход"</a>
                             </div>
                         </div>
@@ -34,14 +38,19 @@
                     <div> <a href="{% url 'create' %}">Создать курс</a></div>
                 {% else %}
                     <div class="nav-toggle"><span></span></div>
-                    <div class="login"><a href="{% url'login' %}" style="color: #000">Вход</a></div>
+                    <!-- тут выпадаем в ошибку: "Reverse for 'login' not found.
+                    'login' is not a valid view function or pattern name."
+                    т.к. login описан в auth_app/views.py, а мы работаем в части /courses/,
+                    т.е. с learning/views.py. Что где надо допрописать?-->
+                    <div class="login"><a href="{% url 'login' %}" style="color: #000">Вход</a></div>
                     <div class="register"><a href="{% url 'register' %}" style="color: #fff">Регистрация</a></div>
                 {% endif%}
             </div>
         </nav>
     </header>
 <main>
-    {% block content %}{% endblock %}
+    {% block content %}{% endblock %} <!--Здесь шаблонизатор может вставлять блоки расширения
+    в нашем случае такой блок будет описан в index.html -->
 </main>
 <footer>
     <div class="footer_container">
