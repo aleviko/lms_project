@@ -1,8 +1,10 @@
-from django.shortcuts import render
+# from django.shortcuts import render
 from django.http import HttpResponse
 
 # Create your views here.
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
+
+
 def login(request):
     return HttpResponse('Страница для <b>вход</b>а пользователя на сайт')
 

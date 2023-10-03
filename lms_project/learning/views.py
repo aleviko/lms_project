@@ -10,7 +10,7 @@ def index(request):
     # return HttpResponse('Список курсов')
     courses = Course.objects.all()  # данные всех курсов
     current_year = datetime.now().year
-    return render(request, context={'courdes': courses}, template_name='index.html')
+    return render(request, context={'courses': courses}, template_name='index.html')
 
 
 def create(request):

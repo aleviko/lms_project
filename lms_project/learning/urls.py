@@ -10,8 +10,9 @@ urlpatterns = [
     path('', index, name='index'),
     # Т.е при переходе на http://127.0.0.1:8000/courses отдавать результат ф-ции index
     path('create/', create, name='create'),
-    re_path('^delete/(?P<course_id>[4-9])/$', delete, name='delete'),
+    # re_path('^delete/(?P<course_id>[4-9])/$', delete, name='delete'),
     # удалить можно будет только курсы с id от 4 до 9 - это работает: http://127.0.0.1:8000/courses/delete/4/
+    path('delete/<int:course_id>/', delete, name='delete'),
     path('detail/<int:course_id>/', detail, name='detail'),
     path('enroll/<int:course_id>/', enroll, name='enroll'),
 ]

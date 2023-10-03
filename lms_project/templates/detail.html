@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-ОТЛАДКА-content-detail.html-Конкретный курс
+<!--ОТЛАДКА-content-detail.html-Конкретный курс-->
     <div class="course_container">
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
             <p><a href="{% url 'delete' course.pk %}" style="color:red">Удалить</a></p>
             <p>{{course.title }}</p>
         </div>
     </div>
+{% endblock %}
