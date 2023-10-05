@@ -4,7 +4,29 @@
     <div class="course_container">
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
             <p><a href="{% url 'delete' course.pk %}" style="color:red">Удалить</a></p>
-            <p>{{course.title }}</p>
+            <p><u>{{ course.title }}</u></p>
+            <p>Автор: {{ course.author.last_name }} {{ course.author.first_name }}</p>
+            <p>Начало: {{ course.start_date }}</p>
+            <p>Продолжительность: {{ course.duration }} мес.</p>
+            <p>Кол-во уроков: {{ course.count_lessons }}</p>
+            <p>Аннотация: {{ course.description }}</p>
+            <p><span class="price">Цена: {{ course.price }} руб.</span></p>
+        </div>
+        <div class="course_preview" style="transform:none; box-shadow: none; border: none">
+            <u>Уроки</u>
+            <ol>
+<!-- Решил опробовать список уроков в виде HTML-списка с условной номерацией - работает -->
+<!--                А можно вставить счетчик из Джанги: {{ counter }}-->
+                {% for lesson in lessons %}
+                    <li> <p>{{ lesson.name }}:</p> <p>{{ lesson.preview }}</p> </li>
+                {% endfor %}
+            </ol>
+            <form method="post" action="{% url 'enroll' course.pk %}">
+                <!-- Токен для защиты от подделки межсайтовых запросов -->
+                !% сsrf_token %!
+                <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
+                <input type="submit" value="Записаться">
+            </form>
         </div>
     </div>
 {% endblock %}

@@ -1,8 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render  # рендеринг шаблона
+from django.shortcuts import redirect  # переадресация на заданную страницу
 from datetime import datetime  # для отображения года копирайта в подвале
 from .models import Course  # получить доступ к таблице курсов
 from .models import Lesson  # получить доступ к таблице уроков
+from .models import Tracking  # получить доступ к таблице записей на курсы
 
 
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
@@ -32,4 +34,20 @@ def detail(request, course_id):
 
 
 def enroll(request, course_id):
-    return HttpResponse(f'Запись на курс с id={course_id}')
+    # if request.user.is_authenticated
+    if request.user.is_anonymous:
+        return redirect('login')  #если не авторизован, то редирект на обработчик входа из auth_app
+    else:
+        # Проверка: не записан ли уже пользователь на этот курс
+        is_existed = Tracking.objects.filter(user=request.user).exists()
+        if is_existed:
+            return HttpResponse('Вы уже записаны на этот курс')
+        else:
+            # список уроков по выбранному курсу
+            lessons = Lesson.objects.filter(course=course_id)
+            # заготовки записей в таблицу Tracking
+            records = [Tracking(lesson=lesson, user=request.user, passed=False) for lesson in lessons]
+            # массовая запись заготовок в таблицу
+            Tracking.objects.bulk_create(records)
+            return HttpResponse('Запись на курс прошла успешно')
+            # return HttpResponse(f'Запись на курс с id={course_id}')
