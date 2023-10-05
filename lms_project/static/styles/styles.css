@@ -1,0 +1,24 @@
+@import "@/assets/font-awesome-5.13.0/css/fontawesome-all.min.css"
+.header_container {display: flex;}
+.auth_container {display: flex;}
+.logo_container {display: flex;}
+.logo {
+  display: flex;
+  scale: 0.5;
+  border-left-width: 10px;
+  border-left-style: solid;
+  border-right-width: 10px;
+  border-right-style: solid;
+  border-top-width: 10px;
+  border-top-style: solid;
+  border-bottom-width: 10px;
+  border-bottom-style: solid;
+}
+.footer_container {display: flex;}
+.course_preview {display: flex;}
+.copyright-mark{
+  scale: 0.2;
+  position: fixed;
+  padding-left: -50px;
+  margin-left: -100px;
+}

@@ -4,10 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="style.css" rel="stylesheet" type="text/css" />
     <title>Codeby - {% block title %}онлайн-курсы{% endblock %}</title>
-<!--    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">-->
-<!--    <script defer src="https://cdnjs.cloudflare.com/ajax/"></script>-->
+<!--    Назначение этого заклинания пока неведомо-->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<!--    Заклинание для загрузки jQuery с https://cdnjs.cloudflare.com/-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+            integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+            crossorigin="anonymous">
+    </script>
+<!--    Конец заклинания-->
+    <link href="{% static 'styles.css' %}" rel="stylesheet" type="text/css">
+    <script defer src="{% static 'script.js' %}"></script>
 </head>
 <body>
     <header>
@@ -16,7 +23,7 @@
             <div class="logo_container">
                 <a class="logo" href="{% url 'index' %}">
 <!--                    <img src="{% static 'img/logo.png' %}" alt="Лого сайта" title="Лого сайта">-->
-                    <img src="{% static 'logo2.jpg' %}" alt="Лого сайта" title="Лого сайта">
+                    <img src="{% static 'logo2.jpg' %}" alt="Логотип сайта" title="Лого сайта">
                 </a>
                 <div class="describer">
                     <div class="title"><h2 translate="no">Codeby</h2></div>
