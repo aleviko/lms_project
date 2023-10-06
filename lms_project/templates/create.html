@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="main_container">
+      <div class="main_item">
+          <h3>Создание курса</h3>
+          <form method="post">
+              !% scrf_token %!
+              <input type="text" maxlength="30" placeholder="Название курса" name="title" required></input>
+<!--              По атрибуту name= идет связь с полями таблицы-->
+<!--              При этом автосверки с моделью: имен, типа и ширины, обязательности полей и... никакого нет!-->
+              <textarea placeholder="Описание" maxlength="200" required name="description"></textarea>
+              <input type="date" placeholder="Дата старта" name="start_date" required></input>
+              <input type="number" placeholder="Продолжительность" name="duration" required></input>
+              <input type="number" placeholder="Цена" name="price" minlength="1" required></input>
+              <input type="number" placeholder="Кол-во уроков" name="count_lessons" required></input>
+              <input type="submit" value="Создать курс">
+
+          </form>
+      </div>
+  </div>
+{% endblock %}

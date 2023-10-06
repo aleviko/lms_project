@@ -13,15 +13,34 @@ def index(request):
     courses = Course.objects.all()  # данные всех курсов
     current_year = datetime.now().year
     return render(request, context={'courses': courses, 'current_year': current_year}, template_name='index.html')
-    # context={объекты, которые хотим передать в страницу}                 template_name='шаблон страницы'
+    # context={объекты, которые хотим передать в страницу}, template_name='шаблон страницы'
 
 
 def create(request):
-    return HttpResponse('Создание курса')
+    if request.method == 'POST':
+        # если был вызов с методом POST, извлекаем данные из заполненной формы, пользователя подставляем текущего
+        # и создаем новую запись
+        data = request.POST
+        Course.objects.create(title=data['title'],
+                              author=request.user,
+                              description=data['description'],
+                              start_date=data['start_date'],
+                              duration=data['duration'],
+                              price=data['price'],
+                              count_lessons=data['count_lessons']
+                              )
+        return redirect('index')
+        # и перенаправляем пользователя на список курсов (а логичнее заставить его повводить уроки)
+    else:
+        # если был вызов с методом GET, создаем пустую форму для заполннения
+        return render(request, 'create.html')
+    #return HttpResponse('Создание курса')
 
 
 def delete(request, course_id):
-    return HttpResponse(f'Удаление курса с id={course_id}')
+    Course.objects.get(id=course_id).delete()  # найти по ИД и удалить
+    return redirect('index')  # и вернуть (переадресовать) на список курсов
+    # return HttpResponse(f'Удаление курса с id={course_id}')
 
 
 def detail(request, course_id):
@@ -37,7 +56,7 @@ def detail(request, course_id):
 def enroll(request, course_id):
     # if request.user.is_authenticated
     if request.user.is_anonymous:
-        return redirect('login')  #если не авторизован, то редирект на обработчик входа из auth_app
+        return redirect('login')  # если не авторизован, то редирект на обработчик входа из auth_app
     else:
         # Проверка: не записан ли уже пользователь на этот курс
         is_existed = Tracking.objects.filter(user=request.user).exists()
