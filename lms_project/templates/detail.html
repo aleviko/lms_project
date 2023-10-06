@@ -23,7 +23,7 @@
             </ol>
             <form method="post" action="{% url 'enroll' course.pk %}">
                 <!-- Токен для защиты от подделки межсайтовых запросов -->
-                !% csrf_token %!
+                {% csrf_token %}
                 <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
                 <input type="submit" value="Записаться">
             </form>

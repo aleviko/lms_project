@@ -59,6 +59,7 @@ def enroll(request, course_id):
         return redirect('login')  # если не авторизован, то редирект на обработчик входа из auth_app
     else:
         # Проверка: не записан ли уже пользователь на этот курс
+        # тут косяк: Tracing надо фильтровать еще и по курсу!!!
         is_existed = Tracking.objects.filter(user=request.user).exists()
         if is_existed:
             return HttpResponse('Вы уже записаны на этот курс')

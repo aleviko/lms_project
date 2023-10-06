@@ -4,7 +4,7 @@
       <div class="main_item">
           <h3>Создание курса</h3>
           <form method="post">
-              !% scrf_token %!
+              {% csrf_token %}
               <input type="text" maxlength="30" placeholder="Название курса" name="title" required></input>
 <!--              По атрибуту name= идет связь с полями таблицы-->
 <!--              При этом автосверки с моделью: имен, типа и ширины, обязательности полей и... никакого нет!-->

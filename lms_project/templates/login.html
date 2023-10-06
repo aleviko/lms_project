@@ -5,7 +5,7 @@
             <form id="form" method="post">
                 <h3>{% block form_name %}Вход{% endblock %}</h3>
                 <!-- Токен для защиты от подделки межсайтовых запросов -->
-                !% csrf_token %!
+                {% csrf_token %}
                 <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
                 <p><input type="text" maxlength="256" placeholder="Ваш Email" name="email" required></p>
                 <p><input type="password" placeholder="Пароль" name="password" required></p>

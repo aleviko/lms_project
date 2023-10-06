@@ -13,7 +13,7 @@ class User(AbstractUser):  # Таблица пользователей на ос
     # instance? filename?
 
     USERNAME_FIELD = 'email'  # Параметр- Указание поля, используемого для авторизации, т.е. логин=эл.почта
-    REQUIRED_FIELDS = ['username','birthday']  # Список имен полей для создания суперпользователя
+    REQUIRED_FIELDS = ['username', 'birthday']  # Список имен полей для создания суперпользователя
 
     class Meta:  # Свойства таблицы
         verbose_name_plural = 'Участники'  # имя записи в множ.числе
