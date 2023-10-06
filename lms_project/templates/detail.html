@@ -3,7 +3,7 @@
 <!--ОТЛАДКА-content-detail.html-Конкретный курс-->
     <div class="course_container">
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
-            <p><a href="{% url 'delete' course.pk %}" style="color:red">Удалить</a></p>
+            <p><a href="{% url 'delete' course.pk %}" style="color:red; display: block;">Удалить</a></p>
             <p><u>{{ course.title }}</u></p>
             <p>Автор: {{ course.author.last_name }} {{ course.author.first_name }}</p>
             <p>Начало: {{ course.start_date }}</p>
@@ -23,7 +23,7 @@
             </ol>
             <form method="post" action="{% url 'enroll' course.pk %}">
                 <!-- Токен для защиты от подделки межсайтовых запросов -->
-                !% сsrf_token %!
+                {% сsrf_token %}
                 <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
                 <input type="submit" value="Записаться">
             </form>

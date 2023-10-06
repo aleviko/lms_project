@@ -12,7 +12,8 @@ def index(request):
     # return HttpResponse('Список курсов')
     courses = Course.objects.all()  # данные всех курсов
     current_year = datetime.now().year
-    return render(request, context={'courses': courses}, template_name='index.html')
+    return render(request, context={'courses': courses, 'current_year': current_year}, template_name='index.html')
+    # context={объекты, которые хотим передать в страницу}                 template_name='шаблон страницы'
 
 
 def create(request):
@@ -28,7 +29,7 @@ def detail(request, course_id):
     course = Course.objects.get(id=course_id)
     lessons = Lesson.objects.filter(course=course_id)
     context = {'course': course, 'lessons': lessons}
-    return render(request, 'detail.html', context)
+    return render(request, 'detail.html', context)  # позиционная передача параметров
 # проверки на существование записи нет?
 # переход по http://127.0.0.1:8000/courses/detail/4000/ при наличии кусов с id = 1,2 и 3 ошибку не вызывает
 
