@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
+from .models import User
 
 # Create your views here.
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
@@ -12,25 +13,36 @@ def login(request):
         data = request.POST
         user = authenticate(email=data['email'], password=data['password'])
         if user and user.is_active:  # пользователь найден (non none) и не заблокирован
-            login(request, user)  # вход
+            login(request, user)  # вход пользователя
             return redirect('index')  # перенаправляем пользователя на главную страницу
         else:
             if user:
                 return HttpResponse('Ваша учетная запись заблокирована!')
             else:
                 return HttpResponse('Неправильное имя или пароль')
-
     else:
         return render(request, 'login.html')  # выдаем пустую форму для входа
 
 
-
 def register(request):
-    return HttpResponse('Страница для <b>регистрации</b> пользователя на сайте')
+    if request.method == 'POST':
+        data = request.POST
+        user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'],
+                    birthday=data['birthday'], description=data['description'],
+                    avatar=data['avatar'])  # объект класа model.User, кроме пароля
+        user.set_password(data['password'])  # пароль сразу преобразуется в хэш
+        user.save()  # сохранение записи пользователя
+        login(request, user)  # вход пользователя
+        return redirect('index')
+    else:
+        return render(request, 'register.html')  # на запрос GET возвращаем пустую форму для регистрации
+    # return HttpResponse('Страница для <b>регистрации</b> пользователя на сайте')
 
 
 def logout(request):
-    return HttpResponse('Это представление выполняет <b>выход</b> и редирект на страницу входа')
+    logout(request)
+    return redirect('login')
+    # return HttpResponse('Это представление выполняет <b>выход</b> и редирект на страницу входа')
 
 
 def change_password(request):
