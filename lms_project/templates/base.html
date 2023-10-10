@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Codeby - {% block title %}онлайн-курсы{% endblock %}</title>
-<!--    Назначение этого заклинания пока неведомо-->
+<!--    Назначение этого заклинания пока неведомо. Набор стилей ради одной кнопки "Выход"?-->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <!--    Заклинание для загрузки jQuery с https://cdnjs.cloudflare.com/-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
@@ -34,14 +34,16 @@
                 {% if user.is_authenticated %}
                     <div class="profile">
                         <div><a href="#">{{ user.last_name }} {{user.first_name }}</a></div>
-                        <div class="submenu_profile" style="display: none;">
+                        <div class="submenu_profile"/>
                             <div>
                                 <p class="fa fa-sign-out"></p>
+                                <!--Стандартная иконка "Выход" из стиля font-awesome (подстыковывается выше)
+                                Без интернета не прорисуется!-->
                                 <!-- тут и далее со страницы /courses/ выпадал в ошибку:
                                 "Reverse for 'logout' not found.'logout' is not a valid view function or pattern name."
                                 Решил добавлением обратных путей в auth_apps/url.py, например:
                                 path('login/', login, name='login')-->
-                                <a style="color: rgba(238, 68, 68, 0.83)" href="{% url 'logout' %}>Выход"></a>
+                                <a style="color: rgba(238, 68, 68, 0.83)" href="{% url 'logout' %}">Выход</a>
                             </div>
                         </div>
                     </div>

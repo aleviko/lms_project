@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login, logout
 from .models import User
 
 # Create your views here.
@@ -11,9 +11,13 @@ def login(request):
     if request.method == 'POST':
         # получаем данные из полей формы логина и получаем запись из модели user для входящего пользователя
         data = request.POST
-        user = authenticate(email=data['email'], password=data['password'])
-        if user and user.is_active:  # пользователь найден (non none) и не заблокирован
-            login(request, user)  # вход пользователя
+        '''Не учтен вариант принудительного захода на http://127.0.0.1:8000/auth/login/ и повторного логина
+        уже залогиненного пользователя. Попробовать:
+        if request.user.is_authenticated:
+            return HttpResponse('Вы уже вошли в систему, нет смысла делать это повторно.')'''
+        user1 = authenticate(email=data['email'], password=data['password'])
+        if user1 is not None and user1.is_active:  # пользователь найден (non none) и не заблокирован
+            login(request, user1)  # вход пользователя - тут ругается: login() takes 1 positional argument but 2 were given
             return redirect('index')  # перенаправляем пользователя на главную страницу
         else:
             if user:
