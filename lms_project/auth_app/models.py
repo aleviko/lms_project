@@ -9,7 +9,7 @@ class User(AbstractUser):  # Таблица пользователей на ос
     email = models.EmailField(unique=True, verbose_name='Email')
     birthday = models.DateField(verbose_name='Дата рождения', blank=False)
     description = models.TextField(verbose_name='Обо мне', null=True, blank=True, default='', max_length=150)
-    avatar = models.ImageField(verbose_name='Фото', blank=True, upload_to=get_timestamp_path_user)
+    avatar = models.ImageField(verbose_name='Аватара', blank=True, upload_to=get_timestamp_path_user)
     # instance? filename?
 
     USERNAME_FIELD = 'email'  # Параметр- Указание поля, используемого для авторизации, т.е. логин=эл.почта

@@ -30,14 +30,21 @@ def login(request):
 
 def register(request):
     if request.method == 'POST':
-        data = request.POST
-        user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'],
-                    birthday=data['birthday'], description=data['description'],
-                    avatar=data['avatar'])  # объекты класса model.User, кроме пароля
-        user.set_password(data['password'])  # пароль сразу преобразуется в хэш
-        user.save()  # сохранение записи пользователя
-        dj_login(request, user)  # вход пользователя
-        return redirect('index')
+        try:  # защита от падений при повторных регистрациях с одинаковым логином
+            data = request.POST
+            user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'],
+                        birthday=data['birthday'], description=data['description'],
+                        #avatar=data['avatar'], # объект класса model.User - все поля, кроме пароля, тянем напрямую из формы
+                        username=data['email'])  # username достался нам в наследство от AbstractUser, он уникальный и непустой, обязателен к заполнению?
+            # пока заполняю его эл.почтой, но впереди маячит сюрприз: эл.почта длиной 256символов, а юзернейм - только 150...
+            user.set_password(data['password'])  # пароль сразу преобразуется в хэш
+            user.avatar = request.FILES['avatar'] ### возможно, костыль, но с ним работает, а без него - нет. Увидено на https://qna.habr.com/q/71870
+            # print('user:', user)
+            user.save()  # сохранение записи пользователя
+            dj_login(request, user)  # вход пользователя
+            return redirect('index')
+        except:
+            return HttpResponse('То ли такой юзер уже существует, то ли еще какая напасть. Разрабу было лом прояснять подробнее :)')
     else:
         return render(request, 'register.html')  # на запрос GET возвращаем пустую форму для регистрации
     # return HttpResponse('Страница для <b>регистрации</b> пользователя на сайте')
