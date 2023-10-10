@@ -7,14 +7,14 @@
     <title>Codeby - {% block title %}онлайн-курсы{% endblock %}</title>
 <!--    Назначение этого заклинания пока неведомо. Набор стилей ради одной кнопки "Выход"?-->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<!--    Заклинание для загрузки jQuery с https://cdnjs.cloudflare.com/-->
+<!--    Заклинание для загрузки jQuery с https://cdnjs.cloudflare.com/ - анимация меню-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
             integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
             crossorigin="anonymous">
     </script>
 <!--    Конец заклинания-->
-    <link href="{% static 'styles.css' %}" rel="stylesheet" type="text/css">
-    <script defer src="{% static 'script.js' %}"></script>
+    <script defer src="{% static 'script.js' %}"></script>  <!--скрипт для управления меню в профиле юзера-->
+    <link href="{% static 'styles.css' %}" rel="stylesheet" type="text/css"> <!--мой стиль-->
 </head>
 <body>
     <header>

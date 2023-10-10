@@ -22,3 +22,5 @@ October 05, 2023 - 16:12:45
 Django version 4.0, using settings 'lms_project.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
+===
+шрифты и стили: https://fonts.google.com/
