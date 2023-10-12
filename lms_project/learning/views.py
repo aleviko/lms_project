@@ -34,7 +34,7 @@ def create(request):
     else:
         # если был вызов с методом GET, создаем пустую форму для заполннения
         return render(request, 'create.html')
-    #return HttpResponse('Создание курса')
+    # return HttpResponse('Создание курса')
 
 
 def delete(request, course_id):
@@ -59,9 +59,18 @@ def enroll(request, course_id):
         return redirect('login')  # если не авторизован, то редирект на обработчик входа из auth_app
     else:
         # Проверка: не записан ли уже пользователь на этот курс
-        # тут косяк: Tracing надо фильтровать еще и по курсу!!!
-        is_existed = Tracking.objects.filter(user=request.user).exists()
+        # тут косяк: Tracking надо фильтровать еще и по курсу!!!
+        is_existed = Tracking.objects.filter(user=request.user, lesson__course=course_id).exists()  # Всегда False!!!
+        # в фильтре по связанному полю нужно ДВА подчеркивания!
+        # Дальше сохраняю свои потуги, они нерабочие, но стоит поисследовать на досуге
+        # lessons_to_enroll = Lesson.objects.filter(course=course_id) # список уроков по выбранному курсу
+        # print(course_id, lessons_to_enroll)
+        # записи в Tracking по урокам, на которые пытаемся записаться
+        # already_enrolled = [Tracking(lesson=lesson, user=request.user) for lesson in lessons_to_enroll]
+        # return HttpResponse(print(*lessons_to_enroll))
         if is_existed:
+        # print(len(already_enrolled))
+        # if len(already_enrolled) > 0:
             return HttpResponse('Вы уже записаны на этот курс')
         else:
             # список уроков по выбранному курсу
