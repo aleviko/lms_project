@@ -24,3 +24,7 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ===
 шрифты и стили: https://fonts.google.com/
+===
+когда изменения в стиле упорно не отображаются в Firefox, обновить "мимо кеша":
+нажать мышкой "Обновить текущую страницу", удерживая [Shift]
+===

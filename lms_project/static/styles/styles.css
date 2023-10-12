@@ -1,12 +1,11 @@
-@import "@/assets/font-awesome-5.13.0/css/fontawesome-all.min.css"
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;1,300&family=Shantell+Sans:wght@300&display=swap');
+/*@import "@/assets/font-awesome-5.13.0/css/fontawesome-all.min.css"*/
+@import url('https://fonts.googleapis.com/css2?family=Bad+Script&family=Roboto:ital,wght@0,300;1,300&family=Shantell+Sans:wght@300&display=swap');
 /*сброс стилей браузера в умолчания*/
 *, *:after, *:before {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    transition: .15s ease-in-out;
+    transition: .5s ease-in-out;
 }
 html{
     font-size: calc(1em + 1vw);
@@ -15,7 +14,8 @@ html{
 /*основной шрифт*/
 body {
     /*font-family: 'Inter', Arial, sans-serif;*/
-    font-family: 'Lobster', cursive;
+    font-family: 'Bad Script', cursive;
+    font-size: .8em
 }
 /*ссылки*/
 a {
@@ -39,7 +39,8 @@ img {
     justify-content: space-between;
     align-items: center;
     margin: 1% 0%;
-    height: 25%;
+    height: 15%;
+    /*font-family: 'Roboto'*/
 }
 .logo {
     display: flex;
@@ -49,9 +50,25 @@ img {
 }
 .describer .title, .footer_container .title {
     font-family: "Roboto", Helvetica, Arial, sans-serif;
-    font-size: 8em;
+    font-size: .5em;
+    font: red
     letter-spacing: .05em;
     opacity: 70%;
+}
+.footer_bar { /*Мой стиль для моего подвала*/
+    font-family: "Roboto", Helvetica, Arial, sans-serif;
+    display: flex;
+    /*flex: 0 1 auto;*/
+    justify-content: space-around;
+    padding: 1%;
+}
+.footer_bar_block { /*Мой стиль для моего подвала*/
+    max-width: 20%;
+    font-size: .5em;
+    color: gray;
+    border: 1px dotted;
+    border-radius: 5px;
+    padding: 1%;
 }
 .role {
     font-family: "Shantell+Sans", Helvetica, Arial, sans-serif;
@@ -207,30 +224,3 @@ footer {
 .copyright-mark img {
         width: 7%;
 }
-
-
-
-/*.header_container {display: flex;}
-.auth_container {display: flex;}
-.logo_container {display: flex;}
-.logo {
-  display: flex;
-  scale: 0.5;
-  border-left-width: 10px;
-  border-left-style: solid;
-  border-right-width: 10px;
-  border-right-style: solid;
-  border-top-width: 10px;
-  border-top-style: solid;
-  border-bottom-width: 10px;
-  border-bottom-style: solid;
-}
-.footer_container {display: flex;}
-.course_preview {display: flex;}
-.copyright-mark{
-  scale: 0.2;
-  position: fixed;
-  padding-left: -50px;
-  margin-left: -100px;
-}
-*/

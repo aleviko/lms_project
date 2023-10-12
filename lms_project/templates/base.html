@@ -63,16 +63,38 @@
 <!--    ОТЛАДКА main-->
 </main>
 <footer>
-    <div class="footer_container">
-        <div class="logo">
-            <div class="copyright-mark">
-                <p><img src="{% static 'logo.png' %}" alt="лого сайта" title="лого сайта">
-                <span class="title">Codeby</span> - онлайн-курсы</p>
+    <div class="footer_bar">  <!--Надоело бороться с предложенной схемой "footer_container", делаю по-своему-->
+<!--        <div class="footer_bar_block">-->
+<!--            <img src="{% static 'logo.png' %}" alt="лого сайта" title="лого сайта">-->
+<!--        </div>-->
+        <div class="footer_bar_block">
+            <div style="display: flex;">
+                <h2 translate="no">Codeby</h2>
+            онлайн-курсы
             </div>
-            <div>&copy; {{ current_year }} Все права защищены</div>
         </div>
-        <div class="privacy"><a href="#">Политика конфиденциальности</a></div>
-        <div class="terms"><a href="#">Условия использования</a></div>
+        <div class="footer_bar_block">
+            <p>&copy; {{ current_year }} Все права защищены</p>
+        </div>
+        <div class="footer_bar_block">
+            <a href="#" style="color: gray">Политика конфиденциальности</a>
+        </div>
+        <div class="footer_bar_block">
+            <a href="#" style="color: gray">Условия использования</a>
+        </div>
+    </div>
+<!--        <div class="logo">-->
+<!--            <div class="copyright-mark">-->
+<!--                <img src="{% static 'logo.png' %}" alt="лого сайта" title="лого сайта" max-width="20%">-->
+<!--                    <div class="title"><h2 translate="no">Codeby</h2></div>-->
+<!--                    <div class="role" display="flex">онлайн-курсы</div>-->
+<!--            </div>-->
+<!--            <div class="copyright-mark">-->
+<!--                <div class="role">&copy; {{ current_year }} Все права защищены</div>-->
+<!--            </div>-->
+<!--            <div class="privacy"><a href="#">Политика конфиденциальности</a></div>-->
+<!--            <div class="terms"><a href="#">Условия использования</a></div>-->
+<!--        </div>-->
     </div>
 </footer>
 </body>
