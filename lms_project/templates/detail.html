@@ -15,10 +15,10 @@
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
             <u style="color:blue;">Уроки</u>
             <ol>
-<!-- Решил опробовать список уроков в виде HTML-списка с условной номерацией - работает -->
-<!--                А можно вставить счетчик из Джанги: {{ counter }}-->
+<!-- Решил опробовать список уроков в виде HTML-списка с условной номерацией - работало, пока не применили стили-->
+<!--                А можно вставить счетчик из Джанги: {{ counter }} но что-то тоже не работает :)-->
                 {% for lesson in lessons %}
-                    <li> <p>{{ lesson.name }}:</p> <p>{{ lesson.preview }}</p> </li>
+                    <li><p>{{ lesson.name }}: {{ lesson.preview }}</p> </li>
                 {% endfor %}
             </ol>
             <form method="post" action="{% url 'enroll' course.pk %}">
