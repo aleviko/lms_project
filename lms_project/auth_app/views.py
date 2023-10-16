@@ -32,14 +32,17 @@ def register(request):
     if request.method == 'POST':
         try:  # защита от падений при повторных регистрациях с одинаковым логином
             data = request.POST
+            # объект класса model.User - все поля, кроме пароля, тянем напрямую из формы
             user = User(email=data['email'], first_name=data['first_name'], last_name=data['last_name'],
                         birthday=data['birthday'], description=data['description'],
-                        #avatar=data['avatar'], # объект класса model.User - все поля, кроме пароля, тянем напрямую из формы
+                        #avatar=data['avatar'], # ...однако аватар так не сохраняется
                         username=data['email'])  # username достался нам в наследство от AbstractUser, он уникальный и непустой, обязателен к заполнению?
             # пока заполняю его эл.почтой, но впереди маячит сюрприз: эл.почта длиной 256символов, а юзернейм - только 150...
             user.set_password(data['password'])  # пароль сразу преобразуется в хэш
-            user.avatar = request.FILES['avatar'] ### возможно, костыль, но с ним работает, а без него - нет. Увидено на https://qna.habr.com/q/71870
-            # print('user:', user)
+            try:  # обход невыбранной/кривой/вообщеНЕ картинки без вникания в подробности. Иначе юзер без аватары не регистрируется
+                user.avatar = request.FILES['avatar'] ### возможно, костыль, но с ним аватар сохраняется, а без него - нет. Увидено на https://qna.habr.com/q/71870
+            except:
+                pass  # до 20231015 при незаполненной аватаре user.avatar = request.FILES['avatar'] не давал зарегать юзера
             user.save()  # сохранение записи пользователя
             dj_login(request, user)  # вход пользователя
             return redirect('index')
