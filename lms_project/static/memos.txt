@@ -1,5 +1,5 @@
 ===
-Подтянуть домой наделанное на работе:
+Подтянуть домой наделанное на работе (не уверен, что правильно):
 [a1@Comp2 ~]$ cd /home/a1/PycharmProjects/lms_project/
 [a1@Comp2 lms_project]$ git pull https://github.com/aleviko/lms_project
 ===
@@ -22,6 +22,9 @@ October 05, 2023 - 16:12:45
 Django version 4.0, using settings 'lms_project.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
+===
+Подготовить миграции: python manage.py makemigrations
+Применить миграции: python manage.py migrate
 ===
 шрифты и стили: https://fonts.google.com/
 ===

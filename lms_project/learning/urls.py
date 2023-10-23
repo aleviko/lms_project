@@ -1,5 +1,5 @@
-from django.urls import path
-from django.urls import re_path  # аналогично path, но позволяет регулярные выражения
+from django.urls import path, reverse
+# from django.urls import re_path  # аналогично path, но позволяет регулярные выражения
 from .views import *
 
 # список маршрутов. имя фиксированное
@@ -7,13 +7,16 @@ from .views import *
 # представления для этих путей см. во views.py
 
 urlpatterns = [
-    path('', index, name='index'),
-    # Т.е при переходе на http://127.0.0.1:8000/courses отдавать результат ф-ции index
-    path('create/', create, name='create'),
-    # re_path('^delete/(?P<course_id>[4-9])/$', delete, name='delete'),
-    # удалить можно будет только курсы с id от 4 до 9 - это работает: http://127.0.0.1:8000/courses/delete/4/
-    path('delete/<int:course_id>/', delete, name='delete'),
-    path('detail/<int:course_id>/', detail, name='detail'),
+    path('',
+        MainView.as_view(
+        #template_name = 'index.html', queryset = Course.objects.all(),
+        # context_object_name = 'courses'
+        ),
+        name='index'),
+    path('create/', CourseCreateView.as_view(), name='create'),
+    path('delete/<int:course_id>/', CourseDeleteView.as_view(), name='delete'),
+    path('detail/<int:course_id>/', CourseDetailView.as_view(), name='detail'),
+    path('update/<int:course_id>/', CourseUpdateView.as_view(), name='update'),
     path('enroll/<int:course_id>/', enroll, name='enroll'),
 ]
 # Параметр name=... позволяет применять обратный поиск адресов (по имени маршрута формируется адрес)

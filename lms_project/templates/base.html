@@ -22,7 +22,12 @@
         <nav class="header_container">
             <div class="logo_container">
                 <a class="logo" href="{% url 'index' %}">
-<!--                    <img src="{% static 'img/logo.png' %}" alt="Лого сайта" title="Лого сайта">-->
+<!--                <img src="{% static 'img/logo.png' %}" alt="Лого сайта" title="Лого сайта">-->
+                    {% comment 'Возможен и такой вариант:' %}
+                    {% static 'logo.png' as logo_url %}
+                    <img src="{{ logo_url }}" alt="Логотип сайта" title="Лого сайта">
+                    Но потребуется заранее загрузить: {% load static %}
+                    {% endcomment %}
                     <img src="{% static 'logo2.jpg' %}" alt="Логотип сайта" title="Лого сайта">
                 </a>
                 <div class="describer">

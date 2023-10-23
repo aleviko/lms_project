@@ -127,6 +127,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+SHORT_DATETIME_FORMAT = 'd.m.Y H:i:s'  # секунды почему-то не отображаются ни в какую, возможно это вообще не работает
+# https://stacktuts.com/how-to-format-datetime-in-django-template
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -150,3 +153,6 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth_app.User'  # Переопределение класса аутентификации
+LOGIN_URL = 'login'  # перенаправление неавторизованного пользователя
+LOGIN_REDIRECT_URL = 'index'  # перенаправление после успешной авторизации
+LOGOUT_URL = 'logout'  # перенаправление после выхода пользователя с сайта

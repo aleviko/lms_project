@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Course, Lesson
 # Register your models here.
 
-
+# настройки вида моделей в АДМИНКЕ
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('title', 'price', 'author', 'start_date', 'description', )  # список полей для вывода

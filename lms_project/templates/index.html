@@ -3,13 +3,23 @@
 {% block content %}
 <!--ОТЛАДКА-content-index.html-Список курсов-->
     <div class="courses_container">
+        {% comment 'Все до endcomment будет считаться комментарием' %}
+        {% now 'd.m.Y H:i:s' %}  <!--отображение текущей даты и времени Если указать формат непосредственно, то работает-->
+        {% now 'SHORT_DATETIME_FORMAT' %}  <!--а так - упорно без секунд. Перезапуск всего и вся не помог. Загадка...-->
+        {% endcomment %}
         {% for course in courses %}
             <div class="course_preview">
-                <p><a href="{% url 'detail' course.pk %}">{{ course.title }}</a></p>
-                <p>| {{ course.start_date }} |</p>
-                <p> {{ course.description }} | </p>
-                <p> <span class="price">{{ course.price }} р.</span> </p>
+                {% comment 'Все до endcomment будет считаться комментарием' %}
+                {{ course.get_absolute_url }}  <!--отображение пути до страницы с описанием курса -->
+                {% endcomment %}
+                <p><a href="{% url 'detail' course.pk %}">{{ course.title|upper }}</a></p>
+<!--                <p><a href="{% url 'detail' course.pk %}">{{ course.0.title }}</a></p>  вывести значение из конкретной (тут - первую) запись -->
+                <p>| {{ course.start_date|date:"j E, l" }} |</p>  <!--отображение даты в формате "день МесяцПрописью ДеньНеделиПрописью"-->
+                <p> {{ course.description|capfirst|truncatechars:40 }} ({{ course.description|wordcount }} слов)| </p>
+                <p> <span class="price">{{ course.price|default:"Бесплатно" }} р.</span> </p>
             </div>
+        {% empty %}
+            <p>Курсов пока нет</p>
         {% endfor %}
     </div>
 <!--<p>ОТЛАДКА: current_year={{ current_year }}</p>-->

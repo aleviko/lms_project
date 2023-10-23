@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.shortcuts import reverse
 # Create your models here.
 
 
@@ -19,13 +20,18 @@ class Course(models.Model):  # Таблица курсов
         verbose_name_plural = 'Курсы'
         verbose_name = 'Курс'
         ordering = ['title']
+        permissions = (
+            ('modify_course', 'Can modify course content'),
+        )
 
-    def __str__(self):  # Настройка представления по умолчанию
+    def __str__(self):  # Настройка представления по умолчанию в АДМИНКЕ
         # - что показывать в таблице, если в learning/admin.py
         # не переопределены списки полей
         # @admin.register(Course)...
         return f'{self.title}: Старт {self.start_date}'
 
+    def get_absolute_url(self):  # абсолютный путь к записи о курсе
+        return reverse('detail', kwargs={'course_id': self.pk})
 
 
 class Lesson(models.Model):
@@ -37,6 +43,9 @@ class Lesson(models.Model):
         verbose_name_plural = 'Уроки'
         verbose_name = 'Урок'
         ordering = ['course']
+        permissions = (
+            ('modify_lesson', 'Can modify lesson content'),
+        )
 
     def __str__(self):
         return f'{self.course}: Урок {self.name}'
