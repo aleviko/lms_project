@@ -49,7 +49,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    # {% сsrf_token %} в detail.html не опознается и валит в ошибку
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -153,6 +152,12 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth_app.User'  # Переопределение класса аутентификации
+
 LOGIN_URL = 'login'  # перенаправление неавторизованного пользователя
 LOGIN_REDIRECT_URL = 'index'  # перенаправление после успешной авторизации
 LOGOUT_URL = 'logout'  # перенаправление после выхода пользователя с сайта
+
+# для ИМИТАЦИИ отправки эл.почты при восстановлении пароля выводом в КОНСОЛЬ
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' - не работает
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"  # - тоже не работает
+EMAIL_FILE_PATH = "/media/app-messages"  # change this to a proper location

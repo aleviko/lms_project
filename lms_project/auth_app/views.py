@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
+from django.contrib.auth.models import Group #, Permission
 from .models import User
 
 # Create your views here.
@@ -44,6 +45,9 @@ def register(request):
             except:
                 pass  # до 20231015 при незаполненной аватаре user.avatar = request.FILES['avatar'] не давал зарегать юзера
             user.save()  # сохранение записи пользователя
+            pupil = Group.objects.filter(name='Ученики')  # нового юзера автоматом добавим в группу "Ученик"
+            # Вообще-то прописывание значений из изменяемых справочников в виде констант в коде культурные люди называют говнокодом, конкретно 1С-овской разновидности :)
+            user.groups.set(pupil)
             dj_login(request, user)  # вход пользователя
             return redirect('index')
         except:

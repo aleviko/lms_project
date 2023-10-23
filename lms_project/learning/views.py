@@ -1,5 +1,6 @@
-from django.contrib.auth.decorators import login_required, permission_required
-# перенаправление на LOGIN_URL, проверка наличия прав
+from django.contrib.auth.decorators import login_required, permission_required  # перенаправление на LOGIN_URL, проверка наличия прав
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # добавки с доп.функционалом
+# LoginRequiredMixin - аналог декоратора login_required? PermissionRequiredMixin - ...
 from django.http import HttpResponse
 from django.shortcuts import render  # рендеринг шаблона
 from django.shortcuts import redirect  # переадресация на заданную страницу
@@ -17,7 +18,7 @@ from .models import Tracking  # получить доступ к таблице 
 from .forms import CourseForm  # классы генерации форм
 
 class MainView(ListView):  # список курсов
-    # pass
+    # доступ всем
     template_name = 'index.html'  # генерируемый шаблон
     queryset = Course.objects.all()  # результаты запроса
     context_object_name = 'courses'  # имя контекстной переменной, используемой в шаблоне
@@ -28,10 +29,11 @@ class MainView(ListView):  # список курсов
         context['current_year'] = datetime.now().year
         return context
 
-class CourseCreateView(CreateView):
+class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'create.html'
     model = Course
     form_class = CourseForm
+    permission_required = ('learning.add_course',)  # доступ только при наличии прав learning.add_course
 
     def get_success_url(self):
         return reverse('detail', kwargs={'course_id': self.object.id})
@@ -42,11 +44,12 @@ class CourseCreateView(CreateView):
         course.save()  # ...автор дописывается поверх незакоммиченной записи
         return super(CourseCreateView, self).form_valid(form)
 
-class CourseUpdateView(UpdateView):
+class CourseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'create.html'
     model = Course
     form_class = CourseForm
     pk_url_kwarg = 'course_id'
+    permission_required = ('learning.change_course',)  # доступ только при наличии прав learning.change_course
 
     def get_queryset(self):
         return Course.objects.filter(id=self.kwargs.get('course_id'))
@@ -55,10 +58,14 @@ class CourseUpdateView(UpdateView):
         return reverse('detail', kwargs={'course_id': self.object.id})
 
 
-class CourseDeleteView(DeleteView):
+class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'delete.html'
     model = Course
     pk_url_kwarg = 'course_id'
+    permission_required = ('learning.delete_course',)  # доступ только при наличии прав learning.delete_course'
+    # незалогинненных перенаправляет на логин, бесправным выдает 403 Forbidden
+
+
     def get_queryset(self):
         return Course.objects.filter(id=self.kwargs.get('course_id'))
     def get_success_url(self):
