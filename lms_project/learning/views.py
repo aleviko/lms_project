@@ -13,7 +13,7 @@ from django.shortcuts import reverse  # появилось в уроке 8
 from datetime import datetime  # для отображения года копирайта в подвале
 from .models import Course  # получить доступ к таблице курсов
 from .models import Lesson  # получить доступ к таблице уроков
-from .models import Tracking  # получить доступ к таблице записей на курсы
+from .models import Tracking, Review
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
 from .forms import CourseForm  # классы генерации форм
 
@@ -83,7 +83,9 @@ class CourseDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
+        # контекстные переменные для связанных таблиц (с отбором по курсу)
         context['lessons'] = Lesson.objects.filter(course=self.kwargs.get('course_id'))
+        context['reviews'] = Review.objects.filter(course=self.kwargs.get('course_id'))
         return context
 
 
@@ -111,3 +113,9 @@ def enroll(request, course_id):
         Tracking.objects.bulk_create(records)
         return HttpResponse('Запись на курс прошла успешно')
             # return HttpResponse(f'Запись на курс с id={course_id}')
+
+
+@login_required  # оставлять отзывы смогут только авторизованные юзеры
+def review(request, course_id):
+    if request.method == 'GET':
+        return render(request, 'review.html')

@@ -58,3 +58,17 @@ class Tracking(models.Model):
 
     class Meta:
         ordering = ['-user']
+
+
+class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Ученик')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    content = models.TextField(verbose_name='Текст отзыва', max_length=250, unique_for_year='sent_date')
+    # контроль уникальности ?Текста отзыва? в пределах года. Как с
+    sent_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ('-sent_date',)
+        unique_together = ('user', 'course',)  # уникальные пары полей

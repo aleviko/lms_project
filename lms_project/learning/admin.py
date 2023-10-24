@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Lesson
+from .models import Course, Lesson, Review
 # Register your models here.
 
 # настройки вида моделей в АДМИНКЕ
@@ -36,3 +36,10 @@ class LessonAdmin(admin.ModelAdmin):
     list_per_page = 2
     actions_selection_counter = True
     # хочется добавить в форму кнопку "Отмена" или "Назад" и поправить названия имеющихся, но не вижу способа
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'content', 'sent_date')
+    search_fields = ('content', )
+    list_per_page = 100

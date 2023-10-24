@@ -37,6 +37,15 @@
                 <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
                 <input type="submit" value="Записаться">
             </form>
+            <div class="reviews_container">
+                {% for review in reviews %}
+                    <p>{{ review.sent_date }} {{ review.user.last_name }} {{ review.user.first_name }}:</p>
+                    <p>{{ review.content }}</p>
+                {% empty %}
+                    <p>Отзывов пока нет. <a href="{% url 'review' course.pk>">Оставить отзыв</a></p>
+                {% endfor %}
+
+            </div>
         </div>
     </div>
 {% endblock %}

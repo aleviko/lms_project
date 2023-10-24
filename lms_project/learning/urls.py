@@ -18,6 +18,7 @@ urlpatterns = [
     path('detail/<int:course_id>/', CourseDetailView.as_view(), name='detail'),
     path('update/<int:course_id>/', CourseUpdateView.as_view(), name='update'),
     path('enroll/<int:course_id>/', enroll, name='enroll'),
+    path('review/<int:course_id>/', review, name='review'),
 ]
 # Параметр name=... позволяет применять обратный поиск адресов (по имени маршрута формируется адрес)
 # <int:course_id> - параметр, передаваемый контроллеру (тип:имя).
