@@ -39,7 +39,7 @@
                 {% if user.is_authenticated %}
                     <div class="profile">
                         <div><a href="#">{{ user.last_name }} {{user.first_name }}</a></div>
-                        <div class="submenu_profile"/>
+                        <div class="submenu_profile" style="display: none;">
                             <div>
                                 <p class="fa fa-sign-out"></p>
                                 <!--Стандартная иконка "Выход" из стиля font-awesome (подстыковывается выше)
@@ -49,6 +49,7 @@
                                 Решил добавлением обратных путей в auth_apps/url.py, например:
                                 path('login/', login, name='login')-->
                                 <a style="color: rgba(238, 68, 68, 0.83)" href="{% url 'logout' %}">Выход</a>
+                                <a style="color: green;" href="{% url 'password_change' %}">Сменить пароль</a>
                             </div>
                         </div>
                     </div>
@@ -62,10 +63,8 @@
         </nav>
     </header>
 <main>
-<!--    ОТЛАДКА content-base.html-->
     {% block content %}{% endblock %} <!--Здесь шаблонизатор может вставлять блоки расширения
     в нашем случае такие блоки будут описаны в index.html и detail.html-->
-<!--    ОТЛАДКА main-->
 </main>
 <footer>
     <div class="footer_bar">  <!--Надоело бороться с предложенной схемой "footer_container", делаю по-своему-->

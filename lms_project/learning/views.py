@@ -22,7 +22,7 @@ class MainView(ListView):  # список курсов
     template_name = 'index.html'  # генерируемый шаблон
     queryset = Course.objects.all()  # результаты запроса
     context_object_name = 'courses'  # имя контекстной переменной, используемой в шаблоне
-    paginate_by = 50
+    paginate_by = 50  # переход по страницам еще не реализован, поэтому заведомо с запасом
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MainView, self).get_context_data(**kwargs)
