@@ -15,9 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings  # для доступа к значениям настроек из кода !в доках мелькает про повышение уязвимости сайта при этом - поизучать!
+from django.conf.urls.static import static  # создает маршрут к файлам !только в тестовом режиме сервера!
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('auth_app.urls')),  # подключить вложенный список маршрутов из auth_app
     path('courses/', include('learning.urls'))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

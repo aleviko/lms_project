@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
     <div class="course_container">
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
@@ -37,10 +38,24 @@
                 <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
                 <input type="submit" value="Записаться">
             </form>
+            <p style="font-weight: bold; margin-left: 5.5%">
+                Отзывы (всего
+                <span style="font-weight: initial; font-size: 0.85em">
+                    {{ reviews.count }}
+                </span>
+                ) <a href="{% url 'review' course.pk %}">Отставить отзыв</a>
+            </p>
             <div class="reviews_container">
                 {% for review in reviews %}
+                <div class="review">
+                    {% if review.user.avatar %}
+                        <img src="{{ review.user.avatar.url }}">
+                    {% else %}
+                        <img src="{% static 'NoAvatar.png' %}">
+                    {% endif %}
                     <p>{{ review.sent_date }} {{ review.user.last_name }} {{ review.user.first_name }}:</p>
                     <p>{{ review.content }}</p>
+                </div>
                 {% empty %}
                     <p>Отзывов пока нет. <a href="{% url 'review' course.pk>">Оставить отзыв</a></p>
                 {% endfor %}

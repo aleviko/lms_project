@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required, permission_required  # перенаправление на LOGIN_URL, проверка наличия прав
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # добавки с доп.функционалом
 # LoginRequiredMixin - аналог декоратора login_required? PermissionRequiredMixin - ...
+from django.core.exceptions import NON_FIELD_ERRORS  # сообщения об ошибках заполнения формы в общем по форме
 from django.http import HttpResponse
 from django.shortcuts import render  # рендеринг шаблона
 from django.shortcuts import redirect  # переадресация на заданную страницу
@@ -8,14 +9,15 @@ from django.views.generic import ListView  # извлекает набор за�
 from django.views.generic import DetailView  # извлекает одну запись из таблицы в контекстные переменные для последующей вставки шаблон
 # имя шаблона должно оканчиваться на "_detail"
 from django.views.generic import CreateView, UpdateView, DeleteView  #
-#from django.urls.base import reverse  # в уроке 7 этого нет, но без него реверс валит в ошибку
+# from django.urls.base import reverse # в уроке 7 этого нет, но без него реверс валит в ошибку
 from django.shortcuts import reverse  # появилось в уроке 8
 from datetime import datetime  # для отображения года копирайта в подвале
 from .models import Course  # получить доступ к таблице курсов
 from .models import Lesson  # получить доступ к таблице уроков
 from .models import Tracking, Review
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
-from .forms import CourseForm  # классы генерации форм
+from .forms import CourseForm, ReviewForm  # классы генерации форм
+
 
 class MainView(ListView):  # список курсов
     # доступ всем
@@ -28,6 +30,7 @@ class MainView(ListView):  # список курсов
         context = super(MainView, self).get_context_data(**kwargs)
         context['current_year'] = datetime.now().year
         return context
+
 
 class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'create.html'
@@ -43,6 +46,7 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         course.author = self.request.user
         course.save()  # ...автор дописывается поверх незакоммиченной записи
         return super(CourseCreateView, self).form_valid(form)
+
 
 class CourseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'create.html'
@@ -62,24 +66,23 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'delete.html'
     model = Course
     pk_url_kwarg = 'course_id'
-    permission_required = ('learning.delete_course',)  # доступ только при наличии прав learning.delete_course'
+    permission_required = ('learning.delete_course',)  # доступ только при наличии прав learning.delete_course
     # незалогинненных перенаправляет на логин, бесправным выдает 403 Forbidden
-
 
     def get_queryset(self):
         return Course.objects.filter(id=self.kwargs.get('course_id'))
+
     def get_success_url(self):
         return reverse('index')
+
 
 class CourseDetailView(DetailView):
     template_name = 'detail.html'
     context_object_name = 'course'
     pk_url_kwarg = 'course_id'  # указываем, как называется первичный ключ
 
-
     def get_queryset(self):
         return Course.objects.filter(id=self.kwargs.get('course_id'))
-
 
     def get_context_data(self, **kwargs):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
@@ -97,12 +100,10 @@ def enroll(request, course_id):
     else:
         # Проверка: не записан ли уже пользователь на этот курс
         теперь это решается @permission_required('learning.add_tracking', raise_exception=True)'''
-
-        # тут косяк: Tracking надо фильтровать еще и по курсу!!!'''
     is_existed = Tracking.objects.filter(user=request.user, lesson__course=course_id).exists()
     if is_existed:
-    # print(len(already_enrolled))
-    # if len(already_enrolled) > 0:
+        # print(len(already_enrolled))
+        # if len(already_enrolled) > 0:
         return HttpResponse('Вы уже записаны на этот курс')
     else:
         # список уроков по выбранному курсу
@@ -112,10 +113,24 @@ def enroll(request, course_id):
         # массовая запись заготовок в таблицу
         Tracking.objects.bulk_create(records)
         return HttpResponse('Запись на курс прошла успешно')
-            # return HttpResponse(f'Запись на курс с id={course_id}')
+        # return HttpResponse(f'Запись на курс с id={course_id}')
 
 
 @login_required  # оставлять отзывы смогут только авторизованные юзеры
+@permission_required('learning.add_review', raise_exception=True)
 def review(request, course_id):
-    if request.method == 'GET':
-        return render(request, 'review.html')
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)  # объект формы с данными из словаря
+        if form.errors:
+            errors = form.errors[NON_FIELD_ERRORS]
+            return render(request, 'review.html', { 'form': form, 'errors': errors })
+        if form.is_valid():
+            data = form.cleaned_data  # только корректно заполненные поля
+            Review.objects.create(content=data['content'],
+                              course=Course.objects.get(id=course_id),
+                              user=request.user)
+        return redirect(reverse('detail', kwargs={'course_id': course_id}))
+    else:
+        form = ReviewForm()
+        return render(request, 'review.html', { 'form': form })
+

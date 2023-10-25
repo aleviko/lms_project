@@ -144,8 +144,8 @@ STATICFILES_DIRS = [
 
 # ## В шаблоне такой секции не было
 # Media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # А откуда берется BASE_DIR?
-MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # путь на стороне сервера к папке с загруженными файлами
+MEDIA_URL = '/media/'  # базовый адрес для формирования ссылок на загружаемые файлы
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

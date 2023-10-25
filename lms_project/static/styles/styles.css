@@ -161,7 +161,7 @@ input, textarea {
 #form button hover {
     background: #fa9405bf;
 }
-.courses_container {
+.courses_container, .reviews_container {
     display: grid;
     width: 90%;
     margin: 5% 8%;
@@ -169,13 +169,21 @@ input, textarea {
     grid-template-columns: repeat(4, 25%);
     grid-gap: 30px;
 }
-.course_preview {
+.course_preview, .review {
     border: 1px solid rgba(0, 0, 0, 0.29);
     border-radius: 20px;
     font-size: 0.65em;
     line-height: 1.5em;
     width: 90%;
     padding: 3%;
+}
+.review img {
+    /*border: 1px solid rgba(0, 0, 0, 0.29);*/
+    border-radius: 50%;
+    /*font-size: 0.65em;*/
+    line-height: 1.5em;
+    width: 19%;
+    /*padding: 3%;*/
 }
 .course_preview:nth-child {
     margin: 0% 2.5%;
