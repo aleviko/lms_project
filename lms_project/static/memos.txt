@@ -1,7 +1,12 @@
 ===
-Подтянуть домой наделанное на работе (не уверен, что правильно):
+Подтянуть домой наделанное на работе:
 [a1@Comp2 ~]$ cd /home/a1/PycharmProjects/lms_project/
 [a1@Comp2 lms_project]$ git pull https://github.com/aleviko/lms_project
+===
+Вытянуть все домой из репозитория:
+cd <куда-нибудь в свободное место>
+git clone https://github.com/aleviko/lms_project
+затереть старые локальные файлы и положить на их место клона
 ===
 Запустить сервер мюскуля:
 [a1@Comp2 lms_project]$ su -
@@ -14,14 +19,7 @@ Password:
 ===
 Запустить тестовый веб-сервер:
 (venv) [a1@Comp2 lms_project]$ python manage.py runserver
-Watching for file changes with StatReloader
-Performing system checks...
 
-System check identified no issues (0 silenced).
-October 05, 2023 - 16:12:45
-Django version 4.0, using settings 'lms_project.settings'
-Starting development server at http://127.0.0.1:8000/
-Quit the server with CONTROL-C.
 ===
 Подготовить миграции: python manage.py makemigrations
 Применить миграции: python manage.py migrate
@@ -30,4 +28,7 @@ Quit the server with CONTROL-C.
 ===
 когда изменения в стиле упорно не отображаются в Firefox, обновить "мимо кеша":
 нажать мышкой "Обновить текущую страницу", удерживая [Shift]
+===
+http://127.0.0.1:8000/courses/
+http://127.0.0.1:8000/admin/
 ===
