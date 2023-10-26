@@ -31,3 +31,26 @@ Quit the server with CONTROL-C.
 когда изменения в стиле упорно не отображаются в Firefox, обновить "мимо кеша":
 нажать мышкой "Обновить текущую страницу", удерживая [Shift]
 ===
+Работа с БД в консоли:
+
+python manage.py shell
+Python 3.9.16 (main, Mar 21 2023, 10:12:38)
+[GCC 10.3.1 20210703 (ALT Sisyphus 10.3.1-alt2)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from learning.models import Course
+>>> aaa = Course.objects
+>>> aaa
+<django.db.models.manager.Manager object at 0x7f989402ca00>
+>>> aaa = Course.objects.last()
+>>> aaa
+<Course: Третий новый курс: Старт 2023-10-10>
+>>> aaa = Course.objects.first()
+>>> aaa
+<Course: Варка кофе: Старт 2023-09-15>
+>>> aaa.lesson_set.all()
+<QuerySet [<Lesson: Варка кофе: Старт 2023-09-15: Урок Насыпание кофе>, <Lesson: Варка кофе: Старт 2023-09-15: Урок налив воды>, <Lesson: Варка кофе: Старт 2023-09-15: Урок Приобретение кофеварки>]>
+>>> bbb = Course.objects.filter(lesson__id=2)
+>>> bbb
+<QuerySet [<Course: Варка кофе: Старт 2023-09-15>]>
+>>>

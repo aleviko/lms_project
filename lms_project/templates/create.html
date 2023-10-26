@@ -5,10 +5,18 @@
       <div class="main_item">
 
           <form id="form" method="post">
-              <h3>{% block form_name %}Создание курса {% endblock %}</h3>
+              <h3>{% block form_name %} Создание курса {% endblock %}</h3>
               {% csrf_token %}
-              {{ form.as_p }}
-<!--              as_p = разделят поля тегом <p></p> -->
+              {{ form.as_p }}  <!--вывод полей, разделенных <p></p>-->
+              {% comment %}
+              другие варианты не лучше:
+                ---
+              <menu>
+              {{ form.as_ul }}  <!--вывод полей как список li, lo, menu-->
+              </menu>
+                ---
+              {{ form.as_table.split }} <!--вывод полей таблицей - стремно, но видно структуру-->
+              {% endcomment %}
               <p><button type="submit">Сохранить</button></p>
           </form>
       </div>

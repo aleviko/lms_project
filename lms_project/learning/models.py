@@ -11,7 +11,7 @@ class Course(models.Model):  # Таблица курсов
     # from django.conf import settings  (AUTH_USER_MODEL)
     description = models.TextField(verbose_name='Описание курса', max_length=200)
     # было уникальным в видео, обычным в пдф
-    start_date = models.DateField(verbose_name='Старт курса')
+    start_date = models.DateField(verbose_name='Старт курса', help_text="В формате дд.мм.гггг, а теги НЕ РАБОТАЮТ")
     duration = models.PositiveIntegerField(verbose_name='Продолжительность')
     price = models.PositiveIntegerField(verbose_name='Цена', blank=True, default=0)
     count_lessons = models.PositiveIntegerField(verbose_name='Кол-во уроков')
