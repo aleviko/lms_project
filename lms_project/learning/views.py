@@ -76,19 +76,23 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return reverse('index')
 
 
-class CourseDetailView(DetailView):
+class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
     template_name = 'detail.html'
     context_object_name = 'course'
     pk_url_kwarg = 'course_id'  # указываем, как называется первичный ключ
 
     def get_queryset(self):
-        return Course.objects.filter(id=self.kwargs.get('course_id'))
+        return Lesson.objects.select_related('course').filter(id=self.kwargs.get('course_id'))  # типа оптимизация,
+        # чтобы выдача двух полей из одной записи не производилась двумя отдельными селектами
+        # возможна только при связях 1:1 или 1:м
+        #return Course.objects.filter(id=self.kwargs.get('course_id'))
 
     def get_context_data(self, **kwargs):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         # контекстные переменные для связанных таблиц (с отбором по курсу)
         context['lessons'] = Lesson.objects.filter(course=self.kwargs.get('course_id'))
-        context['reviews'] = Review.objects.filter(course=self.kwargs.get('course_id'))
+        context['reviews'] = Review.objects.select_related('user').filter(course=self.kwargs.get('course_id'))
+        #context['reviews'] = Review.objects.filter(course=self.kwargs.get('course_id'))
         return context
 
 

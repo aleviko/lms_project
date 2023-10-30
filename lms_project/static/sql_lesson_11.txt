@@ -1,0 +1,493 @@
+Отладка в командной строке:
+$ python manage.py debugsqlshell
+
+>>> from learning.models import *
+>>> Course.objects.all()
+
+SELECT VERSION(), @@sql_mode, @@default_storage_engine, @@sql_auto_is_null, @@lower_case_table_names,
+                                                                              CONVERT_TZ('2001-01-01 01:00:00', 'UTC', 'UTC') IS NOT NULL [6.83ms]
+
+SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED [1.50ms]
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC
+LIMIT 21 [3.33ms]
+<QuerySet [<Course: Варка кофе: Старт 2023-09-15>, <Course: Еще один новый курс: Старт 2025-11-12>, <Course: Жарка яичницы: Старт 2023-09-22>, <Course: Кофеварка в самообороне: Старт 2023-09-24>, <Course: кошкин дом: Старт 2023-10-10>, <Course: Курс 4: Старт 2023-11-03>, <Course: Курс 5: Старт 2023-10-27>, <Course: Новый курс: Старт 2023-10-13>, <Course: Создание курсов: Старт 2023-01-11>, <Course: Третий новый курс: Старт 2023-10-10>]>
+>>>
+>>> first2records = Course.objects.all()[:2]
+>>> first2records
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC
+LIMIT 2 [0.75ms]
+<QuerySet [<Course: Варка кофе: Старт 2023-09-15>, <Course: Еще один новый курс: Старт 2025-11-12>]>
+>>>
+>>> get_record = Course.objects.get(id=1)
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+WHERE `learning_course`.`id` = 1
+LIMIT 21 [0.63ms]
+>>> get_record
+<Course: Варка кофе: Старт 2023-09-15>
+>>>
+>>> get_record.title + ': ' + get_record.description
+'Варка кофе: Насыпание коричневого порошка, налив воды, нагрев турки, медитация, ругань и протирка плиты'
+>>>
+>>> get_record.description += ' - данные можно менять и из командной строки!'
+>>> get_record.save()
+UPDATE `learning_course`
+SET `title` = 'Варка кофе',
+    `description` = 'Насыпание коричневого порошка, налив воды, нагрев турки, медитация, ругань и протирка плиты - данные можно менять и из командной строки!',
+    `start_date` = '2023-09-15',
+    `duration` = 5,
+    `price` = 5,
+    `count_lessons` = 5
+WHERE `learning_course`.`id` = 1 [29.68ms]
+>>> get_record.title + ': ' + get_record.description
+'Варка кофе: Насыпание коричневого порошка, налив воды, нагрев турки, медитация, ругань и протирка плиты - данные можно менять и из командной строки!'
+>>>
+>>> ddd = get_record
+>>> ddd.lesson_set.all()
+SELECT `learning_lesson`.`id`,
+       `learning_lesson`.`course_id`,
+       `learning_lesson`.`name`,
+       `learning_lesson`.`preview`
+FROM `learning_lesson`
+INNER JOIN `learning_course` ON (`learning_lesson`.`course_id` = `learning_course`.`id`)
+WHERE `learning_lesson`.`course_id` = 1
+ORDER BY `learning_course`.`title` ASC
+LIMIT 21 [0.83ms]
+<QuerySet [<Lesson: Варка кофе: Старт 2023-09-15: Урок Насыпание кофе>, <Lesson: Варка кофе: Старт 2023-09-15: Урок налив воды>, <Lesson: Варка кофе: Старт 2023-09-15: Урок Приобретение кофеварки>]>
+>>>
+>>> for l in ddd.lesson_set.all():
+...     print(str(l.id) + ': ' + l.name + ': ' + l.preview)
+...
+SELECT `learning_lesson`.`id`,
+       `learning_lesson`.`course_id`,
+       `learning_lesson`.`name`,
+       `learning_lesson`.`preview`
+FROM `learning_lesson`
+INNER JOIN `learning_course` ON (`learning_lesson`.`course_id` = `learning_course`.`id`)
+WHERE `learning_lesson`.`course_id` = 1
+ORDER BY `learning_course`.`title` ASC [0.76ms]
+1: Насыпание кофе: Поиск турки
+Поиск кофе
+Поиск ложки
+Заполнение турки кофе с помощью ложки (практическое занятие)
+2: налив воды: Поиск кулера
+Налив воды и Уборка лужи  (практические занятия)
+4: Приобретение кофеварки: Выбор модели
+>>>
+>>> Course.objects.first()
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC
+LIMIT 1 [0.80ms]
+<Course: Варка кофе: Старт 2023-09-15>
+>>>
+>>> earliest_starting_course = Course.objects.earliest('start_date')
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+ORDER BY `learning_course`.`start_date` ASC
+LIMIT 1 [0.74ms]
+>>> earliest_starting_course
+<Course: Создание курсов: Старт 2023-01-11>
+
+>>> latest_starting_course = Course.objects.latest('start_date')
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+ORDER BY `learning_course`.`start_date` DESC
+LIMIT 1 [0.82ms]
+>>> latest_starting_course
+<Course: Еще один новый курс: Старт 2025-11-12>
+>>>
+#get_next_by_<имя поля> - следующую по дате в <имя поля> запись относительно ранее выбранной
+#get_previous_by_<имя поля>
+>>> earliest_starting_course.start_date
+datetime.date(2023, 1, 11)
+>>> next_course =  earliest_starting_course
+>>> next_course.start_date
+datetime.date(2023, 1, 11)
+>>> next_course.get_next_by_start_date()
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+WHERE ((`learning_course`.`start_date` = '2023-01-11'
+        AND `learning_course`.`id` > 11)
+       OR `learning_course`.`start_date` > '2023-01-11')
+ORDER BY `learning_course`.`start_date` ASC,
+         `learning_course`.`id` ASC
+LIMIT 1 [4.93ms]
+<Course: Варка кофе: Старт 2023-09-15>
+>>>
+# .exists() - проверить существование записи перед запросом, чтобы не выпадать в ошибку
+>>> rec_exists = Course.objects.filter(title='Варка кофе').exists()
+SELECT (1) AS `a`
+FROM `learning_course`
+WHERE `learning_course`.`title` = 'Варка кофе'
+LIMIT 1 [1.29ms]
+>>> rec_exists
+True
+>>>
+>>> Course.objects.count()
+SELECT COUNT(*) AS `__count`
+FROM `learning_course` [16.70ms]
+10
+>>>
+>>> if rec_exists:
+...     rec = Course.objects.get(title='Варка кофе')
+# .filter(title='Варка кофе') не сохраняется в rec, вероятно потому, что может вернуть более 1 записи
+# а .get(title='Варка кофе').exists() валится в ошибку, если запись не найдена
+# кстати: а если GETнуть по неуникальному полю?..- проверить!
+...
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+WHERE `learning_course`.`title` = 'Варка кофе'
+LIMIT 21 [0.66ms]
+>>>
+>>> rec.lesson_set.count()
+SELECT COUNT(*) AS `__count`
+FROM `learning_lesson`
+WHERE `learning_lesson`.`course_id` = 1 [0.73ms]
+3
+>>>
+>>> rec.lesson_set.all()
+SELECT `learning_lesson`.`id`,
+       `learning_lesson`.`course_id`,
+       `learning_lesson`.`name`,
+       `learning_lesson`.`preview`
+FROM `learning_lesson`
+INNER JOIN `learning_course` ON (`learning_lesson`.`course_id` = `learning_course`.`id`)
+WHERE `learning_lesson`.`course_id` = 1
+ORDER BY `learning_course`.`title` ASC
+LIMIT 21 [0.85ms]
+<QuerySet [<Lesson: Варка кофе: Старт 2023-09-15: Урок Насыпание кофе>, <Lesson: Варка кофе: Старт 2023-09-15: Урок налив воды>, <Lesson: Варка кофе: Старт 2023-09-15: Урок Приобретение кофеварки>]>
+>>>
+===
+Теперь комбинирую - заготовка для 99% подзапросов:
+rec_exists = Course.objects.filter(title='Варка кофе').exists()
+if rec_exists:
+    rec = Course.objects.get(title='Варка кофе')
+    print('В курсе: ' + rec.title + ' Найдено уроков: ' + str(rec.lesson_set.count()) + ': ')
+    rec.lesson_set.all()
+Но по-моему rec.lesson_set.count()
+====
+>>> if rec_exists:
+...     rec = Course.objects.get(title='Варка кофе')
+...     print('В курсе: ' + rec.title + ' Найдено уроков: ' + str(rec.lesson_set.count()) + ': ')
+...     rec.lesson_set.all()
+...
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+WHERE `learning_course`.`title` = 'Варка кофе'
+LIMIT 21 [0.69ms]
+SELECT COUNT(*) AS `__count`
+FROM `learning_lesson`
+WHERE `learning_lesson`.`course_id` = 1 [0.54ms]
+В курсе: Варка кофе Найдено уроков: 3:
+SELECT `learning_lesson`.`id`,
+       `learning_lesson`.`course_id`,
+       `learning_lesson`.`name`,
+       `learning_lesson`.`preview`
+FROM `learning_lesson`
+INNER JOIN `learning_course` ON (`learning_lesson`.`course_id` = `learning_course`.`id`)
+WHERE `learning_lesson`.`course_id` = 1
+ORDER BY `learning_course`.`title` ASC
+LIMIT 21 [0.59ms]
+<QuerySet [<Lesson: Варка кофе: Старт 2023-09-15: Урок Насыпание кофе>, <Lesson: Варка кофе: Старт 2023-09-15: Урок налив воды>, <Lesson: Варка кофе: Старт 2023-09-15: Урок Приобретение кофеварки>]>
+>>>
+===
+.exclude(...) - ...за исключением подходящихпод условие
+
+>>> for c in Course.objects.all():
+...     print(c.title, c.price)
+...
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC [1.26ms]
+Варка кофе 5
+Еще один новый курс 12000
+Жарка яичницы 8
+Кофеварка в самообороне 3
+кошкин дом 1
+Курс 4 4
+Курс 5 5
+Новый курс 11
+Создание курсов 0
+Третий новый курс 3
+>>>
+>>> for c in Course.objects.exclude(price__lte=10):
+# Для чисел:
+# __lt = меньше, __gt = больше
+# __lte = меньше или равно, __gte = больше или равно
+# Для строк:
+# __contains, __startswith, __endswith, __exact = '=' - регистр учитывается
+# __icontains, __istartswith, __iendswith, __iexact = '=' - регистр НЕучитывается
+# Для ДАТ:
+# __date - значение поля как объект date из поля datetime
+# __time - значение поля как объект time из поля datetime
+# __year - год, __month, __day, __hour, __minite, __second
+# __week - номер недели. А ДЕНЬ недели?
+# Другое:
+# __isnull
+# __in=[набор значений через запятую]
+
+
+...     print(c.title, c.price)
+...
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+WHERE NOT (`learning_course`.`price` <= 10)
+ORDER BY `learning_course`.`title` ASC [1.21ms]
+Еще один новый курс 12000
+Новый курс 11
+>>>
+>>> for c in Course.objects.filter(title__contains='кофе'):
+...     print(c.title, c.price)
+...
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+WHERE `learning_course`.`title` LIKE BINARY '%кофе%'
+ORDER BY `learning_course`.`title` ASC [6.73ms]
+Варка кофе 5
+>>>
+>>> Course.objects.all().order_by('price')
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+ORDER BY `learning_course`.`price` ASC
+LIMIT 21 [0.75ms]
+<QuerySet [<Course: Создание курсов: Старт 2023-01-11>, <Course: кошкин дом: Старт 2023-10-10>, <Course: Кофеварка в самообороне: Старт 2023-09-24>, <Course: Третий новый курс: Старт 2023-10-10>, <Course: Курс 4: Старт 2023-11-03>, <Course: Варка кофе: Старт 2023-09-15>, <Course: Курс 5: Старт 2023-10-27>, <Course: Жарка яичницы: Старт 2023-09-22>, <Course: Новый курс: Старт 2023-10-13>, <Course: Еще один новый курс: Старт 2025-11-12>]>
+>>>
+>>> for l in Lesson.objects.filter(course__title__icontains='варка'):
+...     print(l.name)
+...
+SELECT `learning_lesson`.`id`,
+       `learning_lesson`.`course_id`,
+       `learning_lesson`.`name`,
+       `learning_lesson`.`preview`
+FROM `learning_lesson`
+INNER JOIN `learning_course` ON (`learning_lesson`.`course_id` = `learning_course`.`id`)
+WHERE `learning_course`.`title` LIKE '%варка%'
+ORDER BY `learning_course`.`title` ASC [2.08ms]
+Насыпание кофе
+налив воды
+Приобретение кофеварки
+1
+
+>>> for c in Course.objects.values('title', 'price'):
+...     print(c)
+...
+SELECT `learning_course`.`title`,
+       `learning_course`.`price`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC [0.78ms]
+{'title': 'Варка кофе', 'price': 5}
+{'title': 'Еще один новый курс', 'price': 12000}
+{'title': 'Жарка яичницы', 'price': 8}
+{'title': 'Кофеварка в самообороне', 'price': 3}
+{'title': 'кошкин дом', 'price': 1}
+{'title': 'Курс 4', 'price': 4}
+{'title': 'Курс 5', 'price': 5}
+{'title': 'Новый курс', 'price': 11}
+{'title': 'Создание курсов', 'price': 0}
+{'title': 'Третий новый курс', 'price': 3}
+>>>
+
+
+>>> c = Course.objects.values('title', 'price')
+>>> c[1]['title']
+SELECT `learning_course`.`title`,
+       `learning_course`.`price`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC
+LIMIT 1
+OFFSET 1 [1.11ms]
+'Еще один новый курс'
+>>> c
+SELECT `learning_course`.`title`,
+       `learning_course`.`price`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC
+LIMIT 21 [0.71ms]
+<QuerySet [{'title': 'Варка кофе', 'price': 5}, {'title': 'Еще один новый курс', 'price': 12000}, {'title': 'Жарка яичницы', 'price': 8}, {'title': 'Кофеварка в самообороне', 'price': 3}, {'title': 'кошкин дом', 'price': 1}, {'title': 'Курс 4', 'price': 4}, {'title': 'Курс 5', 'price': 5}, {'title': 'Новый курс', 'price': 11}, {'title': 'Создание курсов', 'price': 0}, {'title': 'Третий новый курс', 'price': 3}]>
+>>> c[0]['title']
+SELECT `learning_course`.`title`,
+       `learning_course`.`price`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC
+LIMIT 1 [0.62ms]
+'Варка кофе'
+>>>
+
+>>> c = Course.objects.values_list('title', 'price')
+>>> c
+SELECT `learning_course`.`title`,
+       `learning_course`.`price`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC
+LIMIT 21 [0.70ms]
+<QuerySet [('Варка кофе', 5), ('Еще один новый курс', 12000), ('Жарка яичницы', 8), ('Кофеварка в самообороне', 3), ('кошкин дом', 1), ('Курс 4', 4), ('Курс 5', 5), ('Новый курс', 11), ('Создание курсов', 0), ('Третий новый курс', 3)]>
+>>>
+>>> c = Course.objects.values_list('title', flat=True)
+>>> c
+SELECT `learning_course`.`title`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC
+LIMIT 21 [0.73ms]
+<QuerySet ['Варка кофе', 'Еще один новый курс', 'Жарка яичницы', 'Кофеварка в самообороне', 'кошкин дом', 'Курс 4', 'Курс 5', 'Новый курс', 'Создание курсов', 'Третий новый курс']>
+>>>
+
+
+>>> c = Course.objects.in_bulk(['кошкин дом', 'Жарка яичницы'], field_name='title')
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+WHERE `learning_course`.`title` IN ('кошкин дом',
+                                    'Жарка яичницы') [5.10ms]
+>>>
+>>> c
+{'Жарка яичницы': <Course: Жарка яичницы: Старт 2023-09-22>, 'кошкин дом': <Course: кошкин дом: Старт 2023-10-10>}
+>>>
+===
+дичь жутчайшая (если без нецензурщины):
+Аналог SQL: update learning_course set learning_course.price *= 0.5
+только с с перезаписью ВСЕХ полей ОТДЕЛЬНЫМИ update`ми на КАЖДУЮ запись:
+
+>>> from django.db.models import F
+>>> for c in Course.objects.all():
+...     c.price = F('price') * 0.5
+...     c.save()
+...
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+ORDER BY `learning_course`.`title` ASC [0.84ms]
+UPDATE `learning_course`
+SET `title` = 'Варка кофе',
+    `description` = 'Насыпание коричневого порошка, налив воды, нагрев турки, медитация, ругань и протирка плиты - данные можно менять и из командной строки!',
+    `start_date` = '2023-09-15',
+    `duration` = 5,
+    `price` = (`learning_course`.`price` * 0.5e0),
+    `count_lessons` = 5
+WHERE `learning_course`.`id` = 1 [10.96ms]
+UPDATE `learning_course`
+SET `title` = 'Еще один новый курс',
+    `description` = 'Новый курс еще один',
+    `start_date` = '2025-11-12',
+    `duration` = 1000,
+    `price` = (`learning_course`.`price` * 0.5e0),
+    `count_lessons` = 12000
+WHERE `learning_course`.`id` = 5 [18.30ms]
+
+
+>>> from django.db.models import Q
+>>> c = Course.objects.filter(Q(title__icontains='коФ'))
+>>> c
+SELECT `learning_course`.`id`,
+       `learning_course`.`title`,
+       `learning_course`.`description`,
+       `learning_course`.`start_date`,
+       `learning_course`.`duration`,
+       `learning_course`.`price`,
+       `learning_course`.`count_lessons`
+FROM `learning_course`
+WHERE `learning_course`.`title` LIKE '%коФ%'
+ORDER BY `learning_course`.`title` ASC
+LIMIT 21 [0.88ms]
+<QuerySet [<Course: Варка кофе: Старт 2023-09-15>, <Course: Кофеварка в самообороне: Старт 2023-09-24>]>
+>>>
+
+>>> from django.db.models import Min
+>>> min = Course.objects.aggregate(Min('price'))
+SELECT MIN(`learning_course`.`price`) AS `price__min`
+FROM `learning_course` [2.54ms]
+>>> min
+{'price__min': 0}
+>>>

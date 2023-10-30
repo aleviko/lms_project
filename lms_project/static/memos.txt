@@ -28,45 +28,54 @@ Password:
 ===
 когда изменения в стиле упорно не отображаются в Firefox, обновить "мимо кеша":
 нажать мышкой "Обновить текущую страницу", удерживая [Shift]
-1===
+===
 http://127.0.0.1:8000/courses/
 http://127.0.0.1:8000/admin/
 ===
+SQL:
+#Заготовка для 99% моих подзапросов:
+rec_exists = Course.objects.filter(title='Варка кофе').exists()
+if rec_exists:
+    rec = Course.objects.get(title='Варка кофе')
+    print('В курсе: ' + rec.title + ' Найдено уроков: ' + str(rec.lesson_set.count()) + ': ')
+    rec.lesson_set.all()
+===
+>>> for c in Course.objects.filter(title__contains='кофе'):
+...     print(c.title, c.price)
+for c in Course.objects.exclude(price__lte=10): # NOT в SQL запросе
+rec = Course.objects.get(title='Варка кофе')  # GET по ключу или не только?
+Course.objects.all().order_by('price')
+Course.objects.all().order_by('-price')  # по убыванию
+for l in Lesson.objects.filter(course__title__icontains='варка'):
+for c in Course.objects.values('title', 'price'):
+c = Course.objects.values_list('title', 'price')
+c = Course.objects.values_list('title', flat=True)
+c = Course.objects.in_bulk(['кошкин дом', 'Жарка яичницы'], field_name='title')
 
-Работа с БД в консоли:
+from django.db.models import F - непойми зачем нужная фигня
 
-python manage.py shell
-Python 3.9.16 (main, Mar 21 2023, 10:12:38)
-[GCC 10.3.1 20210703 (ALT Sisyphus 10.3.1-alt2)] on linux
-Type "help", "copyright", "credits" or "license" for more information.
-(InteractiveConsole)
->>> from learning.models import Course
->>> aaa = Course.objects
->>> aaa
-<django.db.models.manager.Manager object at 0x7f989402ca00>
->>> aaa = Course.objects.last()
->>> aaa
-<Course: Третий новый курс: Старт 2023-10-10>
->>> aaa = Course.objects.first()
->>> aaa
-<Course: Варка кофе: Старт 2023-09-15>
->>> aaa.lesson_set.all()
-<QuerySet [<Lesson: Варка кофе: Старт 2023-09-15: Урок Насыпание кофе>, <Lesson: Варка кофе: Старт 2023-09-15: Урок налив воды>, <Lesson: Варка кофе: Старт 2023-09-15: Урок Приобретение кофеварки>]>
+from django.db.models import Q
+c = Course.objects.filter(Q(title__icontains='коФ'))
 
->>> bbb = Course.objects.filter(lesson__id=2)
->>> bbb
-<QuerySet [<Course: Варка кофе: Старт 2023-09-15>]>
+from django.db.models import Min
+min = Course.objects.aggregate(Min('price'))  # Min, Max, Sum, Count, Avg
 
->>> ca = Course.objects.all()
->>> ca
-<QuerySet [<Course: Варка кофе: Старт 2023-09-15>, <Course: Еще один новый курс: Старт 2025-11-12>, <Course: Жарка яичницы: Старт 2023-09-22>, <Course: Кофеварка в самообороне: Старт 2023-09-24>, <Course: кошкин дом: Старт 2023-10-10>, <Course: Курс 4: Старт 2023-11-03>, <Course: Курс 5: Старт 2023-10-27>, <Course: Новый курс: Старт 2023-10-13>, <Course: Создание курсов: Старт 2023-01-01>, <Course: Третий новый курс: Старт 2023-10-10>]>
 
->>> cb = Course.objects.filter(title='Варка кофе')
->>> cb
-<QuerySet [<Course: Варка кофе: Старт 2023-09-15>]>
->>>
+===
+Фильтры:
+# Для чисел:
+# __lt = меньше, __gt = больше
+# __lte = меньше или равно, __gte = больше или равно
+# Для строк:
+# __contains, __startswith, __endswith, __exact = '=' - регистр учитывается
+# __icontains, __istartswith, __iendswith, __iexact = '=' - регистр НЕучитывается
+# Для ДАТ:
+# __date - значение поля как объект date из поля datetime
+# __time - значение поля как объект time из поля datetime
+# __year - год, __month, __day, __hour, __minite, __second
+# __week - номер недели. А ДЕНЬ недели?
+# Другое:
+# __isnull
+# __in=[набор значений через запятую]
 
->>> Lesson.objects.filter(course__id = 1)
-<QuerySet [<Lesson: Варка кофе: Старт 2023-09-15: Урок Насыпание кофе>, <Lesson: Варка кофе: Старт 2023-09-15: Урок налив воды>, <Lesson: Варка кофе: Старт 2023-09-15: Урок Приобретение кофеварки>]>
->>>
 

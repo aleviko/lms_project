@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-osmnvaebrl#9+bs-s^#6r7q8_w=wtbu)x3b=5q-_n6_2svcupe
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+INTERNAL_IPS = ["127.0.0.1",]  # адреса, на обращения с к-рых будет отвечать django-debug-toolbar
+
 ALLOWED_HOSTS = []
 
 
@@ -38,9 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #
+    # Наши приложения
     'auth_app.apps.AuthAppConfig',
     'learning.apps.LearningConfig',
+    # Утилиты
+    'debug_toolbar',  # django. указывать не надо и через _!
 
 ]
 
@@ -52,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Утилиты
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  # django. указывать не надо и через _!
 ]
 
 ROOT_URLCONF = 'lms_project.urls'
