@@ -7,7 +7,17 @@
             <p><a href="{% url 'update' course.pk %}" style="color:blue; display: block;">Изменить</a></p>
             <p><a href="{% url 'index' %}" style="color:gray; display: block;">К списку курсов</a></p>
             <p><u style="color:blue;">{{ course.title }}</u></p>
-            <p>Автор: {{ course.author.last_name }} {{ course.author.first_name }}</p>
+            {% with authors=course.authors.all %}
+                {% if authors|length == 1 %}
+                    <p>Автор: {{ authors.0.last_name }} {{ authors.0.first_name }}</p>
+                {% else %}
+                    <p>Авторы:
+                    {% for au in authors %}
+                        {{ au.last_name }} {{ au.first_name }};
+                    {% endfor %}
+                    </p>
+                {% endif %}
+            {% endwith %}
             <p>Начало: {{ course.start_date }}</p>
             <p>Продолжительность: {{ course.duration }} мес.</p>
             <p>Кол-во уроков: {{ course.count_lessons }}</p>

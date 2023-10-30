@@ -5,7 +5,9 @@ from .models import Course, Lesson, Review
 # настройки вида моделей в АДМИНКЕ
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price', 'author', 'start_date', 'description', )  # список полей для вывода
+    list_display = ('title', 'price',
+                    #'authors',  # поля many:many в таблицу не выводятся
+                    'start_date', 'description', )  # список полей для вывода
     # в ТАБЛИЦЕ, без этого выводится только первое поле
     # Запятые в конце лучше вешать, т.к. иначе при одном поле пайтон считает это строкой и ругается
     exclude = ('price', )  # напротив, какие поля НЕ выводить
@@ -24,6 +26,7 @@ class CourseAdmin(admin.ModelAdmin):
     save_on_top = True  # Добавить блок с кнопками управления записью ВВЕРХУ ФОРМЫ, внизу не отключаются
     list_display_links = ('title', 'description', )  # список полей, которые будут гиперссылками для
     # перехода в ФОРМУ записи. "edit in place" поля нельзя использовать
+    filter_horizontal = ('authors', )  # выбор множества значений из списка в форме
 
 
 @admin.register(Lesson)

@@ -7,7 +7,9 @@ from django.shortcuts import reverse
 class Course(models.Model):  # Таблица курсов
     id = models.AutoField
     title = models.CharField(verbose_name='Название курса', max_length=30, unique=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Автор курса')
+    #author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Автор курса')
+    authors = models.ManyToManyField(settings.AUTH_USER_MODEL, db_table='course_authors',
+                                    related_name='authors', verbose_name='АвторЫ курса')
     # from django.conf import settings  (AUTH_USER_MODEL)
     description = models.TextField(verbose_name='Описание курса', max_length=200)
     # было уникальным в видео, обычным в пдф
