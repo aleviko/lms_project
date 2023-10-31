@@ -8,6 +8,7 @@ from django.shortcuts import redirect  # переадресация на зад�
 from django.views.generic import ListView  # извлекает набор записей из таблицы в контекстные переменные для последующей вставки шаблон
 from django.views.generic import DetailView  # извлекает одну запись из таблицы в контекстные переменные для последующей вставки шаблон
 # имя шаблона должно оканчиваться на "_detail"
+from django.db import transaction
 from django.views.generic import CreateView, UpdateView, DeleteView  #
 # from django.urls.base import reverse # в уроке 7 этого нет, но без него реверс валит в ошибку
 from django.shortcuts import reverse  # появилось в уроке 8
@@ -42,10 +43,11 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return reverse('detail', kwargs={'course_id': self.object.id})
 
     def form_valid(self, form):  # если содержимое формы прошло валидацию...
-        course = form.save(commit=False)
-        course.author = self.request.user
-        course.save()  # ...автор дописывается поверх незакоммиченной записи
-        return super(CourseCreateView, self).form_valid(form)
+        with transaction.atomic:  # оба save - в одну транзакцию
+            course = form.save(commit=False)
+            course.author = self.request.user
+            course.save()  # ...автор дописывается поверх незакоммиченной записи
+            return super(CourseCreateView, self).form_valid(form)
 
 
 class CourseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -78,19 +80,21 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
     template_name = 'detail.html'
-    context_object_name = 'course'
+    context_object_name = 'lessons'  # было context_object_name = 'course'
     pk_url_kwarg = 'course_id'  # указываем, как называется первичный ключ
 
     def get_queryset(self):
         return Lesson.objects.select_related('course').filter(id=self.kwargs.get('course_id'))  # типа оптимизация,
-        # чтобы выдача двух полей из одной записи не производилась двумя отдельными селектами
+        # чтобы выдача двух полей из одной записи не производилась двумя отдельными селектами:
+        # заходим со стороны детей и за счет .select_related получаем поля родительской записи тоже
         # возможна только при связях 1:1 или 1:м
+        # похоже, кеширование типа 1с-овского джангистам еще предстоит изобрести
         #return Course.objects.filter(id=self.kwargs.get('course_id'))
 
     def get_context_data(self, **kwargs):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         # контекстные переменные для связанных таблиц (с отбором по курсу)
-        context['lessons'] = Lesson.objects.filter(course=self.kwargs.get('course_id'))
+        # context['lessons'] = Lesson.objects.filter(course=self.kwargs.get('course_id'))
         context['reviews'] = Review.objects.select_related('user').filter(course=self.kwargs.get('course_id'))
         #context['reviews'] = Review.objects.filter(course=self.kwargs.get('course_id'))
         return context
@@ -98,6 +102,7 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
 
 @login_required
 @permission_required('learning.add_tracking', raise_exception=True)
+@transaction.atomic  # включение атомарной транзакции конкретно для этого контроллера
 def enroll(request, course_id):
     '''    if request.user.is_anonymous:
         return redirect('login')  # если не авторизован, то редирект на обработчик входа из auth_app
@@ -122,6 +127,7 @@ def enroll(request, course_id):
 
 @login_required  # оставлять отзывы смогут только авторизованные юзеры
 @permission_required('learning.add_review', raise_exception=True)
+@transaction.non_atomic_requests  # возврат к "1 операция = 1 транзакция"
 def review(request, course_id):
     if request.method == 'POST':
         form = ReviewForm(request.POST)  # объект формы с данными из словаря

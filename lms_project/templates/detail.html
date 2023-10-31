@@ -20,8 +20,8 @@
                 {% endif %}
             {% endwith %}
             <p>Начало: {{ course_var.course.start_date }}</p>
-            <p>Продолжительность: {{ course_var.first.course.duration }} мес.</p>
-            <p>Кол-во уроков: {{ course_var.first.course.count_lessons }}</p>
+            <p>Продолжительность: {{ course_var.course.duration }} мес.</p>
+            <p>Кол-во уроков: {{ course_var.course.count_lessons }}</p>
             <p>Аннотация: {{ course_var.course.description }}</p>
             <p><span class="price">Цена: {{ course_var.course.price }} руб.</span></p>
         </div>
@@ -54,7 +54,7 @@
                 <span style="font-weight: initial; font-size: 0.85em">
                     {{ reviews.count }}
                 </span>
-                ) <a href="{% url 'review' course.pk %}">Отставить отзыв</a>
+                ) <a href="{% url 'review' course_var.pk %}">Отставить отзыв</a>
             </p>
             <div class="reviews_container">
                 {% for review in reviews %}
@@ -68,7 +68,7 @@
                     <p>{{ review.content }}</p>
                 </div>
                 {% empty %}
-                    <p>Отзывов пока нет. <a href="{% url 'review' course.pk>">Оставить отзыв</a></p>
+                    <p>Отзывов пока нет. <a href="{% url 'review' course_var.pk>">Оставить отзыв</a></p>
                 {% endfor %}
                 {% endwith %}
             </div>

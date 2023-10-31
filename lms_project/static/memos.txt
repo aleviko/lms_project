@@ -78,4 +78,10 @@ min = Course.objects.aggregate(Min('price'))  # Min, Max, Sum, Count, Avg
 # __isnull
 # __in=[набор значений через запятую]
 
+===
+Транзакции:
+@transaction.atomic, @transaction.non_atomic_requests
+transaction.atomic()
 
+set_autocommit(True/False), get_autocommit, commit, savepoint(?id?), savepoint_commit(id),
+rollback, savepoint_rollback(id), clean_savepoints
