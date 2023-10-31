@@ -27,7 +27,7 @@
         </div>
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
             {% with count_lessons=lessons.count %}   <!-- Создание переменной в процессе выполнения -->
-            <u style="color:blue;">Уроки (всего {{ lessons.count }})</u>
+            <u style="color:blue;">Уроки (всего {{ count_lessons }})</u>
             <ol>
 <!-- Решил опробовать список уроков в виде HTML-списка с условной номерацией - работает -->
 <!--                А можно вставить счетчик из Джанги: {{ forloop.counter }}-->
