@@ -3,7 +3,7 @@
   <component name="Black">
     <option name="executionMode" value="BINARY" />
     <option name="pathToExecutable" value="/usr/bin/black" />
-    <option name="sdkUUID" value="1990cf56-ccf3-4333-bc14-291f1e384a24" />
+    <option name="sdkName" value="Python 3.9 (lms_project) (2)" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (lms_project) (2)" project-jdk-type="Python SDK" />
   <component name="PyCharmProfessionalAdvertiser">

@@ -84,7 +84,7 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
     pk_url_kwarg = 'course_id'  # указываем, как называется первичный ключ
 
     def get_queryset(self):
-        return Lesson.objects.select_related('course').filter(id=self.kwargs.get('course_id'))  # типа оптимизация,
+        return Lesson.objects.select_related('course').filter(course=self.kwargs.get('course_id'))  # типа оптимизация,
         # чтобы выдача двух полей из одной записи не производилась двумя отдельными селектами:
         # заходим со стороны детей и за счет .select_related получаем поля родительской записи тоже
         # возможна только при связях 1:1 или 1:м

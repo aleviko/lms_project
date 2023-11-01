@@ -4,8 +4,8 @@
     <div class="course_container">
         {% with course_var=lessons.first %}
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
-            <p><a href="{% url 'delete' course_var.pk %}" style="color:red; display: block;">Удалить</a></p>
-            <p><a href="{% url 'update' course_var.pk %}" style="color:blue; display: block;">Изменить</a></p>
+            <p><a href="{% url 'delete' course_var.course.pk %}" style="color:red; display: block;">Удалить</a></p>
+            <p><a href="{% url 'update' course_var.course.pk %}" style="color:blue; display: block;">Изменить</a></p>
             <p><a href="{% url 'index' %}" style="color:gray; display: block;">К списку курсов</a></p>
             <p><u style="color:blue;">{{ course_var.course.title }}</u></p>
             {% with authors=course_var.course.authors.all %}
@@ -68,7 +68,7 @@
                     <p>{{ review.content }}</p>
                 </div>
                 {% empty %}
-                    <p>Отзывов пока нет. <a href="{% url 'review' course_var.pk>">Оставить отзыв</a></p>
+                    <p>Отзывов пока нет. <a href="{% url 'review' course_var.pk %}">Оставить отзыв</a></p>
                 {% endfor %}
                 {% endwith %}
             </div>
