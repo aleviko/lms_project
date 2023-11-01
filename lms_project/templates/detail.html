@@ -43,7 +43,7 @@
             {% verbatim %}
                 Все между тегами verbatim/endverbatim напрямую пойдет на страницу
             {% endverbatim %}
-            <form method="post" action="{% url 'enroll' course_var.pk %}">
+            <form method="post" action="{% url 'enroll' course_var.course.pk %}">
                 <!-- Токен для защиты от подделки межсайтовых запросов -->
                 {% csrf_token %}
                 <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
@@ -54,7 +54,7 @@
                 <span style="font-weight: initial; font-size: 0.85em">
                     {{ reviews.count }}
                 </span>
-                ) <a href="{% url 'review' course_var.pk %}">Отставить отзыв</a>
+                ) <a href="{% url 'review' course_var.course.pk %}">Отставить отзыв</a>
             </p>
             <div class="reviews_container">
                 {% for review in reviews %}
