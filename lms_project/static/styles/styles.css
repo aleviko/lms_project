@@ -233,5 +233,8 @@ footer {
         width: 7%;
 }
 .error_field textarea {
-    background: #ffe8e8
+    background: #ffe8e8;
+}
+.errorlist {
+    color: red;
 }

@@ -13,8 +13,8 @@ from .views import *
 # представления для этих путей см. во views.py
 
 urlpatterns = [
-    path('login/', login, name='login'),
-    path('register/', register, name='register'),
+    path('login/', UserLoginView.as_view(), name='login'),
+    path('register/', RegisterView.as_view(), name='register'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     # смена пароля
     path('password-change/', PasswordChangeView.as_view(), name='password_change'),  # предопределенное имя шаблона: password_change_form
