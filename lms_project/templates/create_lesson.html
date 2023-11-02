@@ -3,11 +3,22 @@
 {% block content %}
   <div class="main_container">
       <div class="main_item">
-
           <form id="form" method="post">
               <h3>{% block form_name %} Создание урока {% endblock %}</h3>
               {% csrf_token %}
-              {{ form.as_p }}  <!--вывод полей, разделенных <p></p>-->
+
+              {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <p>{{ error|escape }}</p>
+                {% endfor %}
+              {% endif %}
+
+              {% for fld in form.visible_fields %}
+                {% if fld.errors %}
+                    <p>{{ fld.errors }}</p>
+                {% endif %}
+              <p>{{ fld.label_tag }} {{ fld }} {{ fld.help_text }}</p>
+              {% endfor %}
               <p><button type="submit">Сохранить урок</button></p>
           </form>
       </div>
