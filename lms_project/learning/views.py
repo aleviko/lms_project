@@ -9,7 +9,8 @@ from django.views.generic import ListView  # извлекает набор за�
 from django.views.generic import DetailView  # извлекает одну запись из таблицы в контекстные переменные для последующей вставки шаблон
 # имя шаблона должно оканчиваться на "_detail"
 from django.db import transaction
-from django.views.generic import CreateView, UpdateView, DeleteView  #
+from django.db.models import Q
+from django.views.generic import CreateView, UpdateView, DeleteView, FormView  #
 # from django.urls.base import reverse # в уроке 7 этого нет, но без него реверс валит в ошибку
 from django.shortcuts import reverse  # появилось в уроке 8
 from datetime import datetime  # для отображения года копирайта в подвале
@@ -17,20 +18,38 @@ from .models import Course  # получить доступ к таблице к
 from .models import Lesson  # получить доступ к таблице уроков
 from .models import Tracking, Review
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
-from .forms import CourseForm, ReviewForm, LessonForm  # классы генерации форм
+from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm  # классы генерации форм
 
 
-class MainView(ListView):  # список курсов
+class MainView(ListView, FormView):  # список курсов
     # доступ всем
     template_name = 'index.html'  # генерируемый шаблон
     queryset = Course.objects.all()  # результаты запроса
     context_object_name = 'courses'  # имя контекстной переменной, используемой в шаблоне
     paginate_by = 50  # переход по страницам еще не реализован, поэтому заведомо с запасом
+    form_class = OrderByAndSearchForm
+
+    def get_queryset(self):
+        queryset = MainView.queryset
+        if {'search', 'price_order'} != self.request.GET.keys():
+            return queryset  # если не поиск и не сортировка, то вернуть все записи
+        else:
+            search_query = self.request.GET.get('search')
+            price_order_by = self.request.GET.get('price_order')
+            flt = Q(title__icontains=search_query) | Q(description__icontains=search_query)
+            queryset = queryset.filter(flt).order_by(price_order_by)  # отобранные курсы отсортированные по цене
+            return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MainView, self).get_context_data(**kwargs)
         context['current_year'] = datetime.now().year
         return context
+
+    def get_initial(self):
+        initial = super(MainView, self).get_initial()
+        initial['search'] = self.request.GET.get('search','')
+        initial['price_order'] = self.request.GET.get('price_order','title')
+        return initial
 
 
 class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -89,30 +108,24 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
         # заходим со стороны детей и за счет .select_related получаем поля родительской записи тоже
         # возможна только при связях 1:1 или 1:м
         # похоже, кеширование типа 1с-овского джангистам еще предстоит изобрести
-        #return Course.objects.filter(id=self.kwargs.get('course_id'))
+        # return Course.objects.filter(id=self.kwargs.get('course_id'))
 
     def get_context_data(self, **kwargs):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         # контекстные переменные для связанных таблиц (с отбором по курсу)
         # context['lessons'] = Lesson.objects.filter(course=self.kwargs.get('course_id'))
         context['reviews'] = Review.objects.select_related('user').filter(course=self.kwargs.get('course_id'))
-        #context['reviews'] = Review.objects.filter(course=self.kwargs.get('course_id'))
+        # context['reviews'] = Review.objects.filter(course=self.kwargs.get('course_id'))
         return context
+
 
 
 @login_required
 @permission_required('learning.add_tracking', raise_exception=True)
 @transaction.atomic  # включение атомарной транзакции конкретно для этого контроллера
 def enroll(request, course_id):
-    '''    if request.user.is_anonymous:
-        return redirect('login')  # если не авторизован, то редирект на обработчик входа из auth_app
-    else:
-        # Проверка: не записан ли уже пользователь на этот курс
-        теперь это решается @permission_required('learning.add_tracking', raise_exception=True)'''
     is_existed = Tracking.objects.filter(user=request.user, lesson__course=course_id).exists()
     if is_existed:
-        # print(len(already_enrolled))
-        # if len(already_enrolled) > 0:
         return HttpResponse('Вы уже записаны на этот курс')
     else:
         # список уроков по выбранному курсу
@@ -133,7 +146,7 @@ def review(request, course_id):
         form = ReviewForm(request.POST)  # объект формы с данными из словаря
         if form.errors:
             errors = form.errors[NON_FIELD_ERRORS]
-            return render(request, 'review.html', { 'form': form, 'errors': errors })
+            return render(request, 'review.html', {'form': form, 'errors': errors})
         if form.is_valid():
             data = form.cleaned_data  # только корректно заполненные поля
             Review.objects.create(content=data['content'],
@@ -142,7 +155,8 @@ def review(request, course_id):
         return redirect(reverse('detail', kwargs={'course_id': course_id}))
     else:
         form = ReviewForm()
-        return render(request, 'review.html', { 'form': form })
+        return render(request, 'review.html', {'form': form})
+
 
 class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     model = Lesson
@@ -157,5 +171,5 @@ class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
 
     def get_form(self, form_class=None):  # для ограничения списка курсов...
         form = super(LessonCreateView, self).get_form()
-        form.fields['course'].queryset = Course.objects.filter(authors=self.request.user)  #  ... текущим автором
+        form.fields['course'].queryset = Course.objects.filter(authors=self.request.user)  # ... текущим автором
         return form

@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<!--ОТЛАДКА-content-index.html-Список курсов-->
+    <form id="form" method="get">
+        {{ form }}
+        <button type="submit">Получить</button>
+    </form>
     <div class="courses_container">
         {% comment 'Все до endcomment будет считаться комментарием' %}
         {% now 'd.m.Y H:i:s' %}  <!--отображение текущей даты и времени Если указать формат непосредственно, то работает-->

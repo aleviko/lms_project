@@ -1,6 +1,6 @@
 from .models import Course, Review, Lesson
 from django import forms
-from django.forms.widgets import Textarea
+from django.forms.widgets import Textarea, TextInput
 from django.forms.utils import ValidationError
 
 
@@ -50,5 +50,15 @@ class LessonForm(forms.ModelForm):
             raise ValidationError('Описание курса не должно быть длиннее 20(0) символов')
         return preview_data
 
+class OrderByAndSearchForm(forms.Form):
 
+    PRICE_CHOICES = (
+        ('title', 'По умолчанию'),
+        ('price', 'От дешевых к дорогим'),
+        ('-price', 'От дорогих к дешевым'),
+    )
+
+    search = forms.CharField(label='Поиск', label_suffix=':', required=False,
+                             widget=TextInput(attrs={'placeholder': 'Введите запрос...'}))
+    price_order = forms.ChoiceField(label='', choices=PRICE_CHOICES, initial=PRICE_CHOICES[0])
 
