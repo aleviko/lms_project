@@ -232,3 +232,6 @@ footer {
 .copyright-mark img {
         width: 7%;
 }
+.error_field textarea {
+    background: #ffe8e8
+}

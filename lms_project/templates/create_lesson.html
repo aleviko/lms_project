@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="main_container">
+      <div class="main_item">
+
+          <form id="form" method="post">
+              <h3>{% block form_name %} Создание урока {% endblock %}</h3>
+              {% csrf_token %}
+              {{ form.as_p }}  <!--вывод полей, разделенных <p></p>-->
+              <p><button type="submit">Сохранить урок</button></p>
+          </form>
+      </div>
+  </div>
+{% endblock %}

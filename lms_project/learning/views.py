@@ -17,7 +17,7 @@ from .models import Course  # получить доступ к таблице к
 from .models import Lesson  # получить доступ к таблице уроков
 from .models import Tracking, Review
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
-from .forms import CourseForm, ReviewForm  # классы генерации форм
+from .forms import CourseForm, ReviewForm, LessonForm  # классы генерации форм
 
 
 class MainView(ListView):  # список курсов
@@ -144,3 +144,18 @@ def review(request, course_id):
         form = ReviewForm()
         return render(request, 'review.html', { 'form': form })
 
+class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+    model = Lesson
+    form_class = LessonForm
+    template_name = 'create_lesson.html'
+    pk_url_kwarg = 'course_id'
+
+    permission_required('learning.add_lesson', )
+
+    def get_success_url(self):
+        return reverse('detail', kwargs={'course_id': self.kwargs.get('course_id')})
+
+    def get_form(self, form_class=None):  # для ограничения списка курсов...
+        form = super(LessonCreateView, self).get_form()
+        form.fields['course'].queryset = Course.objects.filter(authors=self.request.user)  #  ... текущим автором
+        return form
