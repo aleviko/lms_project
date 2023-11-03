@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required  
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # добавки с доп.функционалом
 # LoginRequiredMixin - аналог декоратора login_required? PermissionRequiredMixin - ...
 from django.core.exceptions import NON_FIELD_ERRORS  # сообщения об ошибках заполнения формы в общем по форме
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render  # рендеринг шаблона
 from django.shortcuts import redirect  # переадресация на заданную страницу
 from django.views.generic import ListView  # извлекает набор записей из таблицы в контекстные переменные для последующей вставки шаблон
@@ -18,7 +18,7 @@ from .models import Course  # получить доступ к таблице к
 from .models import Lesson  # получить доступ к таблице уроков
 from .models import Tracking, Review
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
-from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm  # классы генерации форм
+from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm, SettingForm  # классы генерации форм
 
 
 class MainView(ListView, FormView):  # список курсов
@@ -47,9 +47,12 @@ class MainView(ListView, FormView):  # список курсов
 
     def get_initial(self):
         initial = super(MainView, self).get_initial()
-        initial['search'] = self.request.GET.get('search','')
-        initial['price_order'] = self.request.GET.get('price_order','title')
+        initial['search'] = self.request.GET.get('search', '')
+        initial['price_order'] = self.request.GET.get('price_order', 'title')
         return initial
+
+    def get_paginate_by(self, queryset):
+        return self.request.COOKIES.get('paginate_by', 5)
 
 
 class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -119,7 +122,7 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
         return context
 
     def get(self, request, *args, **kwargs):
-        views = request.session.setdefault('views',{})  # счетчик посещений страницы извлечение, если есть
+        views = request.session.setdefault('views', {})  # счетчик посещений страницы извлечение, если есть
         course_id = str(kwargs[CourseDetailView.pk_url_kwarg])  # ключ страницы (а зачем в строку конвертить?)
         count = views.get(course_id, 0)  # извлечение хранимого счетчика (если есть или 0)
         views[course_id] = count + 1
@@ -156,27 +159,28 @@ def review(request, course_id):
             return render(request, 'review.html', {'form': form, 'errors': errors})
         if form.is_valid():
             data = form.cleaned_data  # только корректно заполненные поля
-            Review.objects.create(content=data['content'],
-                              course=Course.objects.get(id=course_id),
-                              user=request.user)
+            Review.objects.create(content=data['content'], course=Course.objects.get(id=course_id), user=request.user)
         return redirect(reverse('detail', kwargs={'course_id': course_id}))
     else:
         form = ReviewForm()
         return render(request, 'review.html', {'form': form})
 
+
 def add_booking(request, course_id):
     if request.method == 'POST':
         favourites = request.session.get('favourites', list())
         favourites.append(course_id)
-        request.session[('favourites')] = favourites
+        request.session['favourites'] = favourites
         request.session.modified = True
     return redirect(reverse('index'))
+
 
 def remove_booking(request, course_id):
     if request.method == 'POST':
         request.session.get('favourites').remove(course_id)
         request.session.modified = True
     return redirect(reverse('index'))
+
 
 class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     model = Lesson
@@ -200,3 +204,20 @@ class FavouriteView(MainView):
         queryset = super(FavouriteView, self).get_queryset()
         ids = self.request.session.get('favourites', list())
         return queryset.filter(id__in=ids)
+
+
+class SettingFormView(FormView):
+    form_class = SettingForm
+    template_name = 'settings.html'
+
+    def post(self, request, *args, **kwargs):
+        paginate_by = request.POST.get('paginate_by')
+        responce = HttpResponseRedirect(reverse('index'), 'Настройки сохранены')
+        responce.set_cookie('paginate_by', value=paginate_by, secure=False, httponly=False,
+                            samesite='Lax', max_age=60 * 60 * 24 * 365)
+        return responce
+
+    def get_initial(self):
+        initial = super(SettingFormView, self).get_initial()
+        initial['paginate_by'] = self.request.COOKIES.get('paginate_by', 5)
+        return initial

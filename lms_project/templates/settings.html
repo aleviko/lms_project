@@ -3,11 +3,10 @@
 <div class="main_container">
         <div class="main_item" style="transform:none; box-shadow: none; border: none">
             <form id="form" method="post">
-                <h3>{% block form_name %}Вход{% endblock %}</h3>
+                <h3>{% block form_name %}Настройки{% endblock %}</h3>
                 {% csrf_token %}
                 {{ form.as_p }}
-                <p><button type="submit">Войти</button></p>
-                <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+                <p><button type="submit">Сохранить</button></p>
             </form>
         </div>
     </div>
