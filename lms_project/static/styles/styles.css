@@ -15,7 +15,7 @@ html{
 body {
     /*font-family: 'Inter', Arial, sans-serif;*/
     font-family: 'Bad Script', cursive;
-    font-size: .8em
+    font-size: .8em;
 }
 /*ссылки*/
 a {
@@ -51,7 +51,7 @@ img {
 .describer .title, .footer_container .title {
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     font-size: .5em;
-    font: red
+    font: red;
     letter-spacing: .05em;
     opacity: 70%;
 }
@@ -163,7 +163,7 @@ input, textarea {
 }
 .courses_container, .reviews_container {
     display: grid;
-    width: 90%;
+    width: 85%;
     margin: 5% 8%;
     justify-content: center;
     grid-template-columns: repeat(4, 25%);
@@ -237,4 +237,14 @@ footer {
 }
 .errorlist {
     color: red;
+}
+.favourite_container {
+    float: right;
+    width: 30%;
+}
+#favourite_form button {
+    outline: none;
+    background: white;
+    border: none;
+    box-shadow: none;
 }

@@ -60,6 +60,27 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',  # django. указывать не надо и через _!
 ]
 
+# Настройки сессий
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # хранить сессии в БД - для серьезных систем удобнее и быстрее
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'  # хранить сессии в кеше сервера - для макс.производительности
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.file'  # хранить сессии в ФС - для разгрузки дохлых серверов БД
+# SESSION_FILE_PATH = BASE_DIR / 'session' # папка для файлов сессий, если хранить сессии в ФС
+
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True - бесполезно, т.к. браузер может перекрыть своими настройками
+# SESSION_COOKIE_AGE = 30  # время жизни сессии в секундах (независимо от закрытия браузера и простоя) - уже полезнее, но неудобно - нужен таймаут по простою.
+# И я НЕ ЗАМЕТИЛ, что работает (Firefox, запоминание учеток включено - т.е. тоже ненадежно
+# полезные варианты см.: https://stackoverflow.com/questions/14830669/how-to-expire-django-session-in-5minutes
+
+# SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SECURE = True  # доступ к кукам только по https
+SESSION_COOKIE_SAMESITE = 'Strict'  # запрет на отправку сторонним сайтам/'None' - разрешить всегда / 'Lax' - при переходе по ссылке
+
+# Настройки запоминания пользователя - не встроенные параметры, а наша самодеятльность
+REMEMBER_KEY = 'is_remember'  # см. auth_app/forms.py LoginForm. т.е. глобальная конфига теперь зависит от локальной формы...
+REMEMBER_AGE = 60 * 60 * 24 * 365  # помнить юзера примерно год
+
+
 ROOT_URLCONF = 'lms_project.urls'
 
 TEMPLATES = [

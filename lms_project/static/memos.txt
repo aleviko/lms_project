@@ -17,8 +17,14 @@ Password:
 выход
 [a1@Comp2 lms_project]$
 ===
-Запустить тестовый веб-сервер:
-(venv) [a1@Comp2 lms_project]$ python manage.py runserver
+Тестовый веб-сервер
+Запустить: $ python manage.py runserver
+Вытряхнуть старые (не все, только старые) сессии: $ python manage.py clearsessions
+
+===
+Консоль Джанго
+В режиме отладки: $ python manage.py debugsqlshell  (выход по Ctrl+D)
+
 
 ===
 Подготовить миграции: python manage.py makemigrations

@@ -18,7 +18,6 @@
 </head>
 <body>
     <header>
-<!--        ОТЛАДКА header-->
         <nav class="header_container">
             <div class="logo_container">
                 <a class="logo" href="{% url 'index' %}">
@@ -35,21 +34,23 @@
                     <div class="role">онлайн-курсы</div>
                 </div>
             </div>
+            <div class="nav-toggle"><span></span></div>
             <div class="auth_container">
                 {% if user.is_authenticated %}
                     <div class="profile">
                         <div><a href="#">{{ user.last_name }} {{user.first_name }}</a></div>
                         <div class="submenu_profile" style="display: none;">
                             <div>
-                                <p class="fa fa-sign-out"></p>
+                                <p><a class="fa fa-heart" style="color: pink;" href="{% url 'favourites' %}">Избранное</a></p>
+                                <p><a style="color: green;" href="{% url 'password_change' %}">Сменить пароль</a></p>
+                                <p class="fa fa-sign-out">
                                 <!--Стандартная иконка "Выход" из стиля font-awesome (подстыковывается выше)
                                 Без интернета не прорисуется!-->
                                 <!-- тут и далее со страницы /courses/ выпадал в ошибку:
                                 "Reverse for 'logout' not found.'logout' is not a valid view function or pattern name."
                                 Решил добавлением обратных путей в auth_apps/url.py, например:
                                 path('login/', login, name='login')-->
-                                <a style="color: rgba(238, 68, 68, 0.83)" href="{% url 'logout' %}">Выход</a>
-                                <a style="color: green;" href="{% url 'password_change' %}">Сменить пароль</a>
+                                <a style="color: rgba(238, 68, 68, 0.83)" href="{% url 'logout' %}">Выход</a></p>
                             </div>
                         </div>
                     </div>

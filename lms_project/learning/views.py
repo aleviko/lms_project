@@ -118,6 +118,13 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
         # context['reviews'] = Review.objects.filter(course=self.kwargs.get('course_id'))
         return context
 
+    def get(self, request, *args, **kwargs):
+        views = request.session.setdefault('views',{})  # счетчик посещений страницы извлечение, если есть
+        course_id = str(kwargs[CourseDetailView.pk_url_kwarg])  # ключ страницы (а зачем в строку конвертить?)
+        count = views.get(course_id, 0)  # извлечение хранимого счетчика (если есть или 0)
+        views[course_id] = count + 1
+        request.session['views'] = views
+        return super(CourseDetailView, self).get(request, *args, **kwargs)
 
 
 @login_required
@@ -157,6 +164,19 @@ def review(request, course_id):
         form = ReviewForm()
         return render(request, 'review.html', {'form': form})
 
+def add_booking(request, course_id):
+    if request.method == 'POST':
+        favourites = request.session.get('favourites', list())
+        favourites.append(course_id)
+        request.session[('favourites')] = favourites
+        request.session.modified = True
+    return redirect(reverse('index'))
+
+def remove_booking(request, course_id):
+    if request.method == 'POST':
+        request.session.get('favourites').remove(course_id)
+        request.session.modified = True
+    return redirect(reverse('index'))
 
 class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     model = Lesson
@@ -173,3 +193,10 @@ class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
         form = super(LessonCreateView, self).get_form()
         form.fields['course'].queryset = Course.objects.filter(authors=self.request.user)  # ... текущим автором
         return form
+
+
+class FavouriteView(MainView):
+    def get_queryset(self):
+        queryset = super(FavouriteView, self).get_queryset()
+        ids = self.request.session.get('favourites', list())
+        return queryset.filter(id__in=ids)

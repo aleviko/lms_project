@@ -12,11 +12,23 @@
         {% endcomment %}
         {% for course in courses %}
             <div class="course_preview">
-                {% comment 'Все до endcomment будет считаться комментарием' %}
-                {{ course.get_absolute_url }}  <!--отображение пути до страницы с описанием курса -->
-                {% endcomment %}
                 <p><a href="{% url 'detail' course.pk %}">{{ course.title|upper }}</a></p>
-<!--                <p><a href="{% url 'detail' course.pk %}">{{ course.0.title }}</a></p>  вывести значение из конкретной (тут - первую) запись -->
+                {% if not course.pk in request.session.favourites or not request.session.favourites %}
+                    <div class="favourite_container">
+                        <form id="favourite_form" method="post" action="{% url 'add_booking' course.pk %}" title="">
+<!--                            id и правда как бы дублируется, но в итоговую страничку попадает только один из них -->
+                            {% csrf_token %}
+                            <button type="submit" class="fa fa-plus" style="color: #fa9405"></button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="favourite_container">
+                        <form id="favourite_form" method="post" action="{% url 'remove_booking' course.pk %}" title="">
+                            {% csrf_token %}
+                            <button type="submit" class="fa fa-check" style="color: green"></button>
+                        </form>
+                    </div>
+                {% endif %}
                 <p>| {{ course.start_date|date:"j E, l" }} |</p>  <!--отображение даты в формате "день МесяцПрописью ДеньНеделиПрописью"-->
                 <p> {{ course.description|capfirst|truncatechars:40 }} ({{ course.description|wordcount }} слов)| </p>
                 <p> <span class="price">{{ course.price|default:"Бесплатно" }} р.</span> </p>

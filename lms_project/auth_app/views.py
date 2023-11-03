@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login as dj_login, logout as dj_lo
 from django.contrib.auth.models import Group  #, Permission
 from django.contrib.auth.views import LoginView
 from django.views.generic.edit import CreateView
+from django.conf import settings
+from datetime import datetime
 from .models import User
 from .forms import LoginForm, RegisterForm
 
@@ -15,6 +17,16 @@ class UserLoginView(LoginView):
     authentication_form = LoginForm
     template_name = 'login.html'
     next_page = 'index'
+
+    def form_valid(self, form):
+        is_remember = self.request.POST.get('is_remember')  # состояние галочки в отправляемой форме
+        if is_remember == 'on':  # т.е. не True/False, а 'on'/'off'
+            self.request.session[settings.REMEMBER_KEY] = datetime.now().isoformat()  # запоминаем в REMEMBER_KEY момент первого взведение галочки
+            self.request.session.set_expiry(settings.REMEMBER_AGE)  # задаем время жизни сессии
+            # в итоге нас будут помнить ~год с последнего логина
+        elif is_remember == 'off':
+            self.request.session.set_expiry(0)  # сессия существует до закрытия браузера
+        return super(UserLoginView, self).form_valid(form)
 
 
 class RegisterView(CreateView):
