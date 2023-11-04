@@ -5,10 +5,10 @@
         {% with course_var=lessons.first.course %}
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
             <p><a href="{% url 'delete' course_var.pk %}" style="color:red; display: block;">Удалить</a></p>
-            <p><a href="{% url 'update' course_var.pk %}" style="color:blue; display: block;">Изменить</a></p>
+            <p><a href="{% url 'update' course_var.pk %}" style="color:green; display: block;">Изменить</a></p>
             <p><a href="{% url 'create_lesson' course_var.pk %}" style="color:blue; display: block;">Добавить урок</a></p>
             <p><a href="{% url 'index' %}" style="color:gray; display: block;">К списку курсов</a></p>
-            <p><u style="color:blue;">{{ course_var.course.title }}</u></p>
+            <p><u style="color:blue;">Курс: {{ course_var.title }}</u></p>
             {% with authors=course_var.authors.all %}
                 {% if authors|length == 1 %}
                     <p>Автор: {{ authors.0.last_name }} {{ authors.0.first_name }}</p>
@@ -28,10 +28,8 @@
         </div>
         <div class="course_preview" style="transform:none; box-shadow: none; border: none">
             {% with count_lessons=lessons.count %}   <!-- Создание переменной в процессе выполнения -->
-            <u style="color:blue;">Уроки (всего {{ count_lessons }})</u>
+            <u style="color:blue;">Уроки: (всего {{ count_lessons }})</u>
             <ol>
-<!-- Решил опробовать список уроков в виде HTML-списка с условной номерацией - работает -->
-<!--                А можно вставить счетчик из Джанги: {{ forloop.counter }}-->
                 {% spaceless %}   <!-- выброс пробелов, табов и переводов строк. Что-то не заметно -->
                 {% for lesson in lessons %}
                     <li> <p style="font-weight: bold">{{ forloop.counter }}/{{ count_lessons }}: {{ lesson.name }}:</p> <p>{{ lesson.preview }}</p> </li>

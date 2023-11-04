@@ -35,8 +35,9 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        pupil = Group.objects.filter(name='Ученики')  # нового юзера автоматом добавим в группу "Ученики"
-        user.groups.set(pupil)
+        # pupil = Group.objects.filter(name='Ученики')  # нового юзера автоматом добавим в группу "Ученики"
+        # user.groups.set(pupil)
+        # назначение прав теперь по сигналу
         dj_login(self.request, user)
         return redirect('index')
 

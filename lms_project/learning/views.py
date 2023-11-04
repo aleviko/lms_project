@@ -62,10 +62,12 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = ('learning.add_course',)  # доступ только при наличии прав learning.add_course
 
     def get_success_url(self):
-        return reverse('detail', kwargs={'course_id': self.object.id})
+        #return reverse('detail', kwargs={'course_id': self.object.id})
+        return reverse('update', kwargs={'course_id': self.object.id})  #временно перевел стрелку, чтобы хоть так можно было добавить курс после "оптимизации" (курс без уроков приводит к ошибке)
 
     def form_valid(self, form):  # если содержимое формы прошло валидацию...
-        with transaction.atomic:  # оба save - в одну транзакцию
+        # with transaction.atomic:  # оба save - в одну транзакцию - 20231104 упорно валит в ошибку
+        # без нее и с перенаправлением на 'update' сохраняет, но без автора
             course = form.save(commit=False)
             course.author = self.request.user
             course.save()  # ...автор дописывается поверх незакоммиченной записи
