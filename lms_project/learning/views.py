@@ -14,12 +14,13 @@ from django.views.generic import CreateView, UpdateView, DeleteView, FormView  #
 # from django.urls.base import reverse # в уроке 7 этого нет, но без него реверс валит в ошибку
 from django.shortcuts import reverse  # появилось в уроке 8
 from datetime import datetime  # для отображения года копирайта в подвале
+from django.db.models.signals import pre_save
 from .models import Course  # получить доступ к таблице курсов
 from .models import Lesson  # получить доступ к таблице уроков
 from .models import Tracking, Review
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
 from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm, SettingForm  # классы генерации форм
-
+from .signals import set_views
 
 class MainView(ListView, FormView):  # список курсов
     # доступ всем
@@ -67,10 +68,13 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):  # если содержимое формы прошло валидацию...
         # with transaction.atomic:  # оба save - в одну транзакцию - 20231104 упорно валит в ошибку
-        # без нее и с перенаправлением на 'update' сохраняет, но без автора
-            course = form.save(commit=False)
-            course.author = self.request.user
-            course.save()  # ...автор дописывается поверх незакоммиченной записи
+        # без нее и с перенаправлением на 'update' сохраняет, привязку автора пытаюсь наладить
+            course = form.save() # (commit=False) без коммита не будет id курса и след.строчка будет его требовать
+            course.authors.add(self.request.user.pk)  # пробую свой костылик на основе https://metanit.com/python/django/5.7.php?ysclid=lok9fhdhbw117592424
+            # course.author = self.request.user а ЭТО просто МОЛЧА НЕ РАБОТАЕТ!!! у нас давно нет поля author
+            # print(f'course.author={course.author} self.request.user={self.request.user}')
+            # course.author=Участник tutor tutor: tutor@tutor.ru self.request.user=Участник tutor tutor: tutor@tutor.ru
+            course.save()  # ...автор дописывается поверх уже ЗАкоммиченной записи, есть место для глюков!!
             return super(CourseCreateView, self).form_valid(form)
 
 
@@ -124,11 +128,15 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
         return context
 
     def get(self, request, *args, **kwargs):
-        views = request.session.setdefault('views', {})  # счетчик посещений страницы извлечение, если есть
-        course_id = str(kwargs[CourseDetailView.pk_url_kwarg])  # ключ страницы (а зачем в строку конвертить?)
-        count = views.get(course_id, 0)  # извлечение хранимого счетчика (если есть или 0)
-        views[course_id] = count + 1
-        request.session['views'] = views
+        set_views.send(sender=self.__class__, session=request.session,
+                       pk_url_kwarg=CourseDetailView.pk_url_kwarg,
+                       id=kwargs[CourseDetailView.pk_url_kwarg])
+        # переехало в сигналы
+        # views = request.session.setdefault('views', {})  # счетчик посещений страницы извлечение, если есть
+        # course_id = str(kwargs[CourseDetailView.pk_url_kwarg])  # ключ страницы (а зачем в строку конвертить?)
+        # count = views.get(course_id, 0)  # извлечение хранимого счетчика (если есть или 0)
+        # views[course_id] = count + 1
+        # request.session['views'] = views
         return super(CourseDetailView, self).get(request, *args, **kwargs)
 
 
@@ -191,6 +199,14 @@ class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     pk_url_kwarg = 'course_id'
 
     permission_required('learning.add_lesson', )
+
+    def form_valid(self, form):  # принудительная отправка сигнала
+        error = pre_save.send(sender=LessonCreateView.model, instance=form.save(commit=False))
+        if error[0][1]:
+            form.errors[NON_FIELD_ERRORS] = [error[0][1]]  # выдача ошибок, если есть, на форму
+            return super(LessonCreateView, self).form_invalid(form)
+        else:
+            return super(LessonCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('detail', kwargs={'course_id': self.kwargs.get('course_id')})

@@ -34,7 +34,10 @@ class RegisterView(CreateView):
     template_name = 'register.html'
 
     def form_valid(self, form):
-        user = form.save()
+        user = form.save(commit=False)
+        # имя пользователя нельзя оставлять пустым. как без этого обходятся другие?
+        user.username = user.email  # насчет ширины полей вопрос так и не решен тоже
+        user.save()
         # pupil = Group.objects.filter(name='Ученики')  # нового юзера автоматом добавим в группу "Ученики"
         # user.groups.set(pupil)
         # назначение прав теперь по сигналу

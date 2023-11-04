@@ -24,8 +24,11 @@
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="124ad6bd-816b-4e07-a77e-6298524ba037" dataset="lms_db.django_content_type" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="124ad6bd-816b-4e07-a77e-6298524ba037" dataset="lms_db.learning_course" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="124ad6bd-816b-4e07-a77e-6298524ba037" dataset="lms_db.django_session" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="124ad6bd-816b-4e07-a77e-6298524ba037" dataset="lms_db.course_authors" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="124ad6bd-816b-4e07-a77e-6298524ba037" dataset="lms_db.auth_app_user" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="124ad6bd-816b-4e07-a77e-6298524ba037" dataset="lms_db.learning_lesson" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="124ad6bd-816b-4e07-a77e-6298524ba037" dataset="lms_db.learning_review" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
@@ -81,7 +84,7 @@
           <connect-automatically value="true" />
           <restore-workspace value="true" />
           <restore-workspace-deep value="false" />
-          <environment-type value="default" />
+          <environment-type value="development" />
           <connectivity-timeout value="30" />
           <idle-time-to-disconnect value="30" />
           <idle-time-to-disconnect-pool value="5" />
@@ -96,7 +99,7 @@
           <tcp-port-from value="4000" />
           <tcp-port-to value="4999" />
         </debugger>
-        <object-filters hide-empty-schemas="false" hide-pseudo-columns="false">
+        <object-filters hide-empty-schemas="true" hide-pseudo-columns="false">
           <object-type-filter>
             <object-type name="SCHEMA" enabled="true" />
             <object-type name="USER" enabled="true" />
