@@ -1,11 +1,12 @@
-/*@import "@/assets/font-awesome-5.13.0/css/fontawesome-all.min.css"*/
+/* почитать: https://doka.guide/css/import/ */
+/*@import "@/assets/font-awesome-5.13.0/css/fontawesome-all.min.css" - не находится такой*/
 @import url('https://fonts.googleapis.com/css2?family=Bad+Script&family=Roboto:ital,wght@0,300;1,300&family=Shantell+Sans:wght@300&display=swap');
-/*сброс стилей браузера в умолчания*/
+/*сброс стилей браузера*/
 *, *:after, *:before {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    transition: .5s ease-in-out;
+    transition: .2s ease-in-out;
 }
 html{
     font-size: calc(1em + 1vw);
@@ -17,7 +18,7 @@ body {
     font-family: 'Bad Script', cursive;
     font-size: .8em;
 }
-/*ссылки*/
+/* ссылки обычные */
 a {
     text-decoration: none;
     outline: none;
@@ -26,49 +27,106 @@ a {
     cursor: pointer;
 }
 a:hover {
-    transition: .55s ease-in-out;
+    transition: .3s ease-in-out;
 }
-/*картинки*/
+/* мой вариант ссылок в виде кнопок */
+.semibutton {
+    padding: 10px; /*1%;*/
+    min-width: 100px;
+    /*max-height: 40px;*/
+    border-width: 2px;
+    border-style: solid;
+    border-color: gray;
+    border-radius: 10px;
+    background: silver;
+    box-shadow: -3px 3px 5px 0px;
+}
+.semibutton:hover {
+    transition: 0.3s ease-in-out;
+    border-color: orange;
+    /*box-shadow: -3px 3px 5px 0px inset;*/
+    /*box-shadow: 0 0 40px 8px;*/
+    /*-webkit-box-shadow: 0 0 40px 2px #fa94056e;
+    -moz-box-shadow: 0 0 40px 2px #fa94056e;*/
+}
+.semibutton:active {
+    transition: 0.3s ease-in-out;
+    box-shadow: -3px 3px 5px 0px inset;
+}
+/* картинки глобально - а зачем так?*/
 img {
     max-width: 40%;
 }
-/*разделы сайта через классы*/
-.header_container, .footer_container, main {
+/* разделы сайта*/
+.header_container, main {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     margin: 1% 0%;
     height: 15%;
-    /*font-family: 'Roboto'*/
+    font-family: 'Roboto';
 }
-.logo {
+.logo, .describer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-.describer .title, .footer_container .title {
+.title, .logo_container {
+    display: flex;
+    flex-direction: row;
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     font-size: .5em;
     font: red;
     letter-spacing: .05em;
     opacity: 70%;
 }
-.footer_bar { /*Мой стиль для моего подвала*/
+/* мой стиль для подвала */
+.footer_container {
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     display: flex;
     /*flex: 0 1 auto;*/
-    justify-content: space-around;
+    justify-content: left; /*space-around;*/
     padding: 1%;
 }
-.footer_bar_block { /*Мой стиль для моего подвала*/
+.footer_container_block {
     max-width: 20%;
     font-size: .5em;
     color: gray;
     border: 1px dotted;
     border-radius: 5px;
     padding: 1%;
+}
+/* просмотр курса */
+.course_preview, .course_lessons {
+    border-width: 2px;
+    border-style: solid;
+    border-color: gray;
+    border-radius: 20px;
+    font-size: 0.65em;
+    line-height: 1.5em;
+    width: 90%;
+    padding: 3%;
+}
+/* отзывы */
+.course_reviews_container {
+    border-width: 2px;
+    border-style: solid;
+    border-color: gray;
+    border-radius: 20px;
+    font-size: 0.65em;
+    line-height: 1.5em;
+    width: 90%;
+    padding: 3%;
+}
+.course_reviews_container img {
+    min-width: 100px;
+    max-width: 100px;
+    border-radius: 10%;
+}
+.course_review {
+    display: flex;
 }
 .role {
     font-family: "Shantell+Sans", Helvetica, Arial, sans-serif;
@@ -83,21 +141,22 @@ img {
     flex-direction: row;
     justify-content: space-between;
     font-size: .7em;
-    widht: 15%;
+    width: 15%;
     color: black;
     margin-right: 8%;
 }
 .auth_container img{
     border-radius: 50%;
 }
-.register {
+
+#register {
     padding: 5%;
     color: #ffffff;
     background: #fa9405;
     border-radius: 30px;
 }
-.register-hover {
-    transition: 0.7s ease-in-out;
+#register:hover {
+    transition: 0.3s ease-in-out;
     box-shadow: 0 0 40px 8px #fa94056e;
     -webkit-box-shadow: 0 0 40px 2px #fa94056e;
     -moz-box-shadow: 0 0 40px 2px #fa94056e;
@@ -107,7 +166,7 @@ img {
     border-radius: 20px;
     opacity: 85%;
 }
-.login-hover {
+.login:hover {
     border: 1px solid black;
 }
 #form {
@@ -169,22 +228,8 @@ input, textarea {
     grid-template-columns: repeat(4, 25%);
     grid-gap: 30px;
 }
-.course_preview, .review {
-    border: 1px solid rgba(0, 0, 0, 0.29);
-    border-radius: 20px;
-    font-size: 0.65em;
-    line-height: 1.5em;
-    width: 90%;
-    padding: 3%;
-}
-.review img {
-    /*border: 1px solid rgba(0, 0, 0, 0.29);*/
-    border-radius: 50%;
-    /*font-size: 0.65em;*/
-    line-height: 1.5em;
-    width: 19%;
-    /*padding: 3%;*/
-}
+
+
 .course_preview:nth-child {
     margin: 0% 2.5%;
     padding-left: 0;
@@ -204,7 +249,7 @@ input, textarea {
 }
 .course_container .course_preview:hover {
     transform: scale(1.01);
-    transition: all .4s ease-in-out;
+    transition: all .3s ease-in-out;
     border: 1.5px solid #fa9405;
     box-shadow: 0 0 40px 2px #fa94056e;
     -webkit-box-shadow: 0 0 40px 2px #fa94056e;

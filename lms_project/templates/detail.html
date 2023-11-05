@@ -3,7 +3,8 @@
 {% block content %}
     <div class="course_container">
         {% with course_var=lessons.first.course %}
-        <div class="course_preview" style="transform:none; box-shadow: none; border: none">
+        <div class="course_preview">
+<!--            style="transform:none; box-shadow: none; border: none"-->
             <p><a href="{% url 'delete' course_var.pk %}" style="color:red; display: block;">Удалить</a></p>
             <p><a href="{% url 'update' course_var.pk %}" style="color:green; display: block;">Изменить</a></p>
             <p><a href="{% url 'create_lesson' course_var.pk %}" style="color:blue; display: block;">Добавить урок</a></p>
@@ -26,7 +27,8 @@
             <p>Аннотация: {{ course_var.description }}</p>
             <p><span class="price">Цена: {{ course_var.price }} руб.</span></p>
         </div>
-        <div class="course_preview" style="transform:none; box-shadow: none; border: none">
+        <div class="course_lessons">
+<!--             style="transform:none; box-shadow: none; border: none"-->
             {% with count_lessons=lessons.count %}   <!-- Создание переменной в процессе выполнения -->
             <u style="color:blue;">Уроки: (всего {{ count_lessons }})</u>
             <ol>
@@ -45,6 +47,8 @@
                 <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
                 <input type="submit" value="Записаться">
             </form>
+        </div>
+        <div class="course_reviews_container">
             <p style="font-weight: bold; margin-left: 5.5%">
                 Отзывы (всего
                 <span style="font-weight: initial; font-size: 0.85em">
@@ -52,22 +56,20 @@
                 </span>
                 ) <a href="{% url 'review' course_var.pk %}">Оставить отзыв</a>
             </p>
-            <div class="reviews_container">
-                {% for review in reviews %}
-                <div class="review">
-                    {% if review.user.avatar %}
-                        <img src="{{ review.user.avatar.url }}">
-                    {% else %}
-                        <img src="{% static 'NoAvatar.png' %}">
-                    {% endif %}
-                    <p>{{ review.sent_date }} {{ review.user.last_name }} {{ review.user.first_name }}:</p>
-                    <p>{{ review.content }}</p>
-                </div>
-                {% empty %}
-                    <p>Отзывов пока нет.</p>
-                {% endfor %}
-                {% endwith %}
+            {% for review in reviews %}
+            <div class="course_review">
+                {% if review.user.avatar %}
+                    <img src="{{ review.user.avatar.url }}">
+                {% else %}
+                    <img src="{% static 'NoAvatar.png' %}">
+                {% endif %}
+                <p>{{ review.sent_date }} {{ review.user.last_name }} {{ review.user.first_name }}:</p>
+                <p>{{ review.content }}</p>
             </div>
+            {% empty %}
+                <p>Отзывов пока нет.</p>
+            {% endfor %}
+            {% endwith %}
         </div>
     </div>
 {% endblock %}

@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Codeby - {% block title %}онлайн-курсы{% endblock %}</title>
 <!--    Назначение этого заклинания пока неведомо. Набор стилей ради одной кнопки "Выход"?-->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <!--    Заклинание для загрузки jQuery с https://cdnjs.cloudflare.com/ - анимация меню-->
@@ -15,19 +14,20 @@
 <!--    Конец заклинания-->
     <script defer src="{% static 'script.js' %}"></script>  <!--скрипт для управления меню в профиле юзера-->
     <link href="{% static 'styles.css' %}" rel="stylesheet" type="text/css"> <!--мой стиль-->
+
+    <title>Codeby - {% block title %}онлайн-курсы{% endblock %}</title>
 </head>
 <body>
     <header>
         <nav class="header_container">
             <div class="logo_container">
                 <a class="logo" href="{% url 'index' %}">
-<!--                <img src="{% static 'img/logo.png' %}" alt="Лого сайта" title="Лого сайта">-->
+                    <img src="{% static 'logo2.jpg' %}" alt="Логотип сайта" title="Лого сайта">
                     {% comment 'Возможен и такой вариант:' %}
                     {% static 'logo.png' as logo_url %}
                     <img src="{{ logo_url }}" alt="Логотип сайта" title="Лого сайта">
                     Но потребуется заранее загрузить: {% load static %}
                     {% endcomment %}
-                    <img src="{% static 'logo2.jpg' %}" alt="Логотип сайта" title="Лого сайта">
                 </a>
                 <div class="describer">
                     <div class="title"><h2 translate="no">Codeby</h2></div>
@@ -57,9 +57,9 @@
                     </div>
                     <div> <a href="{% url 'create' %}">Создать курс</a></div>
                 {% else %}
-                    <div class="nav-toggle"><span></span></div>
-                    <div class="login"><a href="{% url 'login' %}" style="color: #000">Вход</a></div>
-                    <div class="register"><a href="{% url 'register' %}" style="color: #0ff">Регистрация</a></div>
+<!--                    <div class="nav-toggle"><span></span></div>-->
+                    <div class="semibutton"><a href="{% url 'login' %}" style="color: #0f0">Вход</a></div>
+                    <div class="semibutton"><a href="{% url 'register' %}" style="color: #0ff">Регистрация</a></div>
                 {% endif %}
             </div>
         </nav>
@@ -69,23 +69,23 @@
     в нашем случае такие блоки будут описаны в index.html и detail.html-->
 </main>
 <footer>
-    <div class="footer_bar">  <!--Надоело бороться с предложенной схемой "footer_container", делаю по-своему-->
-<!--        <div class="footer_bar_block">-->
+    <div class="footer_container">
+<!--        <div class="footer_container_block">-->
 <!--            <img src="{% static 'logo.png' %}" alt="лого сайта" title="лого сайта">-->
 <!--        </div>-->
-        <div class="footer_bar_block">
-            <div style="display: flex;">
-                <h2 translate="no">Codeby</h2>
-            онлайн-курсы
-            </div>
+        <div class="footer_container_block">
+                <div class="describer">
+                    <div class="title"><h2 translate="no">Codeby</h2></div>
+                    <div class="role">онлайн-курсы</div>
+                </div>
         </div>
-        <div class="footer_bar_block">
+        <div class="footer_container_block">
             <p>&copy; {{ current_year }} Все права защищены</p>
         </div>
-        <div class="footer_bar_block">
+        <div class="footer_container_block">
             <a href="#" style="color: gray">Политика конфиденциальности</a>
         </div>
-        <div class="footer_bar_block">
+        <div class="footer_container_block">
             <a href="#" style="color: gray">Условия использования</a>
         </div>
     </div>
