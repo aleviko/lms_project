@@ -6,6 +6,8 @@ from .fuctions import get_timestamp_path_user
 
 # Create your models here.
 class User(AbstractUser):  # Таблица пользователей на основе готового класса AbstractUser
+    username = models.TextField(verbose_name='NotUsed', null=True, blank=True,unique=False, default='', max_length=150)
+    # 20231105 выключил стандартный username, а, чтобы не чистить поле, длину сохранил
     email = models.EmailField(unique=True, verbose_name='Email')
     birthday = models.DateField(verbose_name='Дата рождения', blank=False)
     description = models.TextField(verbose_name='Обо мне', null=True, blank=True, default='', max_length=150)
