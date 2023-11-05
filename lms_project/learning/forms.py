@@ -29,11 +29,11 @@ class LessonForm(forms.ModelForm):
     # А по-хорошему это поле вообще надо скрыть и заполнить автоматом.
     preview = forms.CharField(widget=Textarea(attrs={'placeholder': 'Описание содержания урока',
                               'rows': 20, 'cols': 35}),
-                              label='', required=True)
+                              label='Описание', required=True)
     # выделили на экране 700 символов, а в модели 200, но тут мы переопределили, а в БД поле текстовое
     # поэтому сохранение 700 символов будет работать, если не ограничим специально (см. clean_preview)
-    error_css_class = 'error_field'  # HTML class для полей, не прошедших валидацию, в SCC прописал, но не работает.
-    required_css_class = 'required_field'  # HTML class для обязательных полей
+    error_css_class = 'error_field'  # HTML class для полей, не прошедших валидацию, в SCC прописал, но не работает - не попадает в HTML.
+    required_css_class = 'required_field'  # HTML class для МЕТОК обязательных полей - работает, но независимо от содержимого полей
 
     class Meta:
         model = Lesson
@@ -46,8 +46,8 @@ class LessonForm(forms.ModelForm):
     def clean_preview(self):  # переопределение метода проверки для одного поля
         preview_data = self.cleaned_data['preview']
         # извлекаем текст из проверенных данных формы (там 700 символов допустимы)
-        if len(preview_data) > 20:  # 200, но я замучался напихивать по столько
-            raise ValidationError('Описание курса не должно быть длиннее 20(0) символов')
+        if len(preview_data) > 200:  # 200, но я замучался напихивать по столько
+            raise ValidationError('Описание курса не должно быть длиннее 20(после отладки переделать на 200) символов')
         return preview_data
 
 class OrderByAndSearchForm(forms.Form):

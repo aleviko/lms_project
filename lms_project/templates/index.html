@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+    <div class="index">
     <form class="courses_filter" id="form" method="get">
         {{ form }}
         <button type="submit">Получить</button>
     </form>
+
     <div class="courses_container">
         {% comment 'Все до endcomment будет считаться комментарием' %}
         {% now 'd.m.Y H:i:s' %}  <!--отображение текущей даты и времени Если указать формат непосредственно, то работает-->
         {% now 'SHORT_DATETIME_FORMAT' %}  <!--а так - упорно без секунд. Перезапуск всего и вся не помог. Загадка...-->
         {% endcomment %}
         {% for course in courses %}
-            <div class="course_preview">
+            <div class="courses_preview">
                 <p><a href="{% url 'detail' course.pk %}">{{ course.title|upper }}</a></p>
                 {% if not course.pk in request.session.favourites or not request.session.favourites %}
                     <div class="favourite_container">
@@ -51,5 +53,6 @@
                 <a href="?page={{ page_obj.paginator.num_pages }}">К последней &raquo;</a>
             {% endif %}
         </span>
+    </div>
     </div>
 {% endblock %}

@@ -53,7 +53,7 @@ a:hover {
 img {
     max-width: 40%;
 }
-/* разделы сайта*/
+/* общие разделы*/
 .header_container, main {
     display: flex;
     flex-direction: row;
@@ -78,7 +78,6 @@ img {
     letter-spacing: .05em;
     opacity: 70%;
 }
-/* мой стиль для подвала */
 .footer_container {
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     display: flex;
@@ -94,12 +93,88 @@ img {
     border-radius: 5px;
     padding: 1%;
 }
+/* список курсов, т.е. index, = courseS... */
+.index {  /* чисто для отключки flex из main, потом при пагинации понадобилась ширина */
+    display: block;
+    width: 100%;
+}
+/* АвтоФормы (логин, регистрация)*/
+#form {
+    padding: 3%; /*10*/
+    border: 2px solid #fa9405;
+    border-radius: 40px;
+    text-align: left;
+    font-size: .6em;
+}
+#form h3 {
+    font-style: italic;
+    text-align: center;
+    font-size: 2em;
+    color: #fa9405;
+    margin-bottom: 2%;
+}
+#form input, #form textarea {
+    width: 92%;
+    padding: 10px 5px 10px 32px;
+    font-size: large;
+    font-family: "Shantell+Sans", Helvetica, Arial, sans-serif;
+    border: 0.5px solid #fa940559;
+    box-sizing: content-box;
+    border-radius: 3px;
+}
+#form input:active, #form input:focus {
+    border: 1px solid #fa9405;
+    box-shadow: 0 1px 4px 0 #fa940559 inset;
+    background: rgba(238, 236, 240, 0.2);
+}
+#form button {
+    width: 40%;
+    float: right;
+    cursor: pointer;
+    background: #fa9405;
+    padding: 8px 5px;
+    margin-top: 10px;
+    color: #000;
+    font-size: 0.9em;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    box-shadow: 0 1px 6px 4px #fa940559 inset;
+    transition: all .2s ease-in-out;
+}
+#form button hover {
+    background: #fa9405bf;
+}
+.price {
+    color: #0ba5189c;
+    font-weight: bold;
+}
+.copyright-mark img {
+    width: 7%;
+}
+/* МОЁ */
 /* фильтры и поиск */
-.courses_filter{
+.courses_filter {
     display: flex;
+    padding: 1%;
+    /*width: 100%;*/
     /*flex-direction: row;*/
 }
-/* просмотр курса */
+.courses_container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.courses_preview {  /* карточки курсов */
+    border-width: 2px;
+    border-style: solid;
+    border-color: gray;
+    border-radius: 20px;
+    font-size: 0.65em;
+    line-height: 1.5em;
+    width: 30%;
+    padding: 3%;
+}
+/* просмотр конкретного курса = course... */
 /* Чисто для отключки flex от main*/
 .detail {
     display:block;
@@ -161,6 +236,14 @@ img {
 .error_field textarea {  /* А такого элемента в форме просто нет, что это? */
     background: #ffe8e8;
 }
+.error_field {  /*...и так тоже не работает */
+    background: ffe8e8;
+    color: pink;
+}
+.required_field {  /* выделение желтым МЕТОК обязательных полей (причем независимо от заполненности полей) работает */
+    background: yellow;
+}
+
 .errorlist { /* А это опять заработало, мешало что-то, что сейчас ниже... */
     color:red;
 }
@@ -174,7 +257,6 @@ img {
     border: none;
     box-shadow: none;
 }
-
 .role {
     font-family: "Shantell+Sans", Helvetica, Arial, sans-serif;
     font-style: italic;
@@ -216,64 +298,10 @@ img {
 .login:hover {
     border: 1px solid black;
 }
-/* АвтоФормы (логин, регистрация)*/
-#form {
-    /*height: 105%;*/
-    padding: 10%;
-    border: 2px solid #fa9405;
-    border-radius: 40px;
-    text-align: left;
-    font-size: .6em;
-    /*z-index: 22;*/
-}
-#form h3 {
-    font-style: italic;
-    text-align: center;
-    font-size: 2em;
-    color: #fa9405;
-    margin-bottom: 2%;
-}
 /*Досюда работает*/
 input, textarea {
     outline: none;
     margin-bottom: 2%;
 }
-#form input, #form textarea {
-    width: 92%;
-    padding: 10px 5px 10px 32px;
-    font-size: large;
-    font-family: "Shantell+Sans", Helvetica, Arial, sans-serif;
-    border: 0.5px solid #fa940559;
-    box-sizing: content-box;
-    border-radius: 3px;
-}
-#form input:active, #form input:focus {
-    border: 1px solid #fa9405;
-    box-shadow: 0 1px 4px 0 #fa940559 inset;
-    backgroung: rgba(238, 236, 240, 0.2;
-}
-#form button {
-    width: 40%;
-    float: right;
-    cursor: pointer;
-    background: #fa9405;
-    padding: 8px 5px;
-    marging-top: 10px;
-    color: #000;
-    font-size: 0.9em;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-    border-radius: 3px;
-    box-shadow: 0 1px 6px 4px #fa940559 inset;
-    transition: all .2s ease-in-out;
-}
-#form button hover {
-    background: #fa9405bf;
-}
-.price {
-    color: #0ba5189c;
-    font-weight: bold;
-}
-.copyright-mark img {
-        width: 7%;
-}
+
 

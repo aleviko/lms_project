@@ -64,17 +64,14 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def get_success_url(self):
         #return reverse('detail', kwargs={'course_id': self.object.id})
-        return reverse('update', kwargs={'course_id': self.object.id})  #временно перевел стрелку, чтобы хоть так можно было добавить курс после "оптимизации" (курс без уроков приводит к ошибке)
+        # print(f'self.object.id={self.object.id}')
+        return reverse('create_lesson', kwargs={'course_id': self.object.id})  #временно перевел стрелку, чтобы хоть так можно было добавить курс после "оптимизации" (курс без уроков приводит к ошибке)
 
     def form_valid(self, form):  # если содержимое формы прошло валидацию...
-        # with transaction.atomic:  # оба save - в одну транзакцию - 20231104 упорно валит в ошибку
-        # без нее и с перенаправлением на 'update' сохраняет, привязку автора пытаюсь наладить
-            course = form.save() # (commit=False) без коммита не будет id курса и след.строчка будет его требовать
-            course.authors.add(self.request.user.pk)  # пробую свой костылик на основе https://metanit.com/python/django/5.7.php?ysclid=lok9fhdhbw117592424
-            # course.author = self.request.user а ЭТО просто МОЛЧА НЕ РАБОТАЕТ!!! у нас давно нет поля author
-            # print(f'course.author={course.author} self.request.user={self.request.user}')
-            # course.author=Участник tutor tutor: tutor@tutor.ru self.request.user=Участник tutor tutor: tutor@tutor.ru
-            course.save()  # ...автор дописывается поверх уже ЗАкоммиченной записи, есть место для глюков!!
+        with transaction.atomic():  # до return все в одной транзакции
+            course = form.save()
+            course.authors.add(self.request.user)  # привязка автора (authors = many:many)
+            course.save()  # ...автор дописывается
             return super(CourseCreateView, self).form_valid(form)
 
 
@@ -142,7 +139,7 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
 
 @login_required
 @permission_required('learning.add_tracking', raise_exception=True)
-@transaction.atomic  # включение атомарной транзакции конкретно для этого контроллера
+@transaction.atomic()  # включение атомарной транзакции конкретно для этого контроллера
 def enroll(request, course_id):
     is_existed = Tracking.objects.filter(user=request.user, lesson__course=course_id).exists()
     if is_existed:
