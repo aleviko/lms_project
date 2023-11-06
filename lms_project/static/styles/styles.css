@@ -233,19 +233,21 @@ img {
     flex-wrap: wrap;
 }
 /* Сообщения об ошибках в формах */
-.error_field textarea {  /* А такого элемента в форме просто нет, что это? */
+.error_field textarea {
     background: #ffe8e8;
 }
-.error_field {  /*...и так тоже не работает */
-    background: ffe8e8;
-    color: pink;
-}
-.required_field {  /* выделение желтым МЕТОК обязательных полей (причем независимо от заполненности полей) работает */
-    background: yellow;
-}
+/*.error_field {  /*...и так тоже не работает */
+/*    background: ffe8e8;
+}*/
+/*.required_field {  /* выделение желтым МЕТОК обязательных полей (причем независимо от заполненности полей) работает, но бесполезно */
+/*    background: yellow;
+}*/
 
 .errorlist { /* А это опять заработало, мешало что-то, что сейчас ниже... */
     color:red;
+}
+.required_field input:invalid, .required_field textarea:invalid, .required_field select:invalid {
+    background: #ff940030;
 }
 .favourite_container {
     float: right;
