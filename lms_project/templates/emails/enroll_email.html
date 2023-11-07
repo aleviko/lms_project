@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <header>
+        <div class="describer">
+            <div class="title"><h2 translate="no">Безымянка</h2></div>
+            <div class="role">онлайн-курсы</div>
+        </div>
+    </header>
+<main>
+    {% block content %}
+    {#<p>{{ message }}</p>#}  <!--Хочется с форматированием, а через {{ message }} все превращается в текст-->
+    <div><p>Здравствуйте!</p>
+        <p><a href="{{ request.scheme }}://{{ request.META.HTTP_HOST}}{{ course.get_absolute_url}}">
+                Вы записались на курс: {{ course.title }}
+        </a></p>
+        {% with authors=course.authors.all %}
+            {% if authors|length == 1 %}
+                <p>Автор: {{ authors.0.last_name }} {{ authors.0.first_name }}</p>
+            {% else %}
+                <p>Авторы:
+                {% for au in authors %}
+                    {{ au.last_name }} {{ au.first_name }};
+                {% endfor %}
+                </p>
+            {% endif %}
+        {% endwith %}
+        <p>Начало: {{ course.start_date }}</p>
+        <p>Продолжительность: {{ course.duration }} мес.</p>
+        <p>Кол-во уроков: {{ course.count_lessons }}</p>
+        <p>Аннотация: {{ course.description }}</p>
+        <p>Цена: {{ course.price }} руб.</p>
+    </div>
+    {% endblock %}
+</main>
+</body>
+</html>

@@ -1,9 +1,15 @@
 from django.db.models.signals import pre_save
 from django.dispatch import Signal
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
 from .models import Course, Lesson
 
 
+
 set_views = Signal()  # самодельный сигнал для подсчета посещений
+course_enroll = Signal()  # запись на курс
+
 
 def check_lessons_qty(sender, instance, **kwargs):
     error = None
@@ -25,10 +31,31 @@ def incr_views(sender, **kwargs):  # подсчет посещений
     session['views'] = views
     session.modified = True
 
+
+def send_enroll_email(**kwargs):
+    template_name = 'emails/enroll_email.html'
+    course = Course.objects.get(id=kwargs['course_id'])
+    context = {
+        'course': course,
+        'message': f'Вы записались на курс {course.title}. '
+                   f'Курс состоит из {course.count_lessons} уроков '
+                   f'(но это не точно, т.к. наша LMS странная ;)) '
+                   f'Начало занятий {course.start_date}'
+        # теги здесь не работают, а жаль. в итоге пишу все буквы в шаблоне, а этот текст не использую
+    }
+    send_mail(subject=f'Вы записались на курс {course.title}.| Платформа жд.ст.Безымянка!',
+              message='',  # для plain text?
+              from_email=settings.DEFAULT_FROM_EMAIL,
+              recipient_list=[kwargs['request'].user.email],
+              html_message=render_to_string(template_name, context, kwargs['request']),  # генерация хтмл по шаблону
+              fail_silently=False  # валиться в ошибку при неотправке. если не спамим на непроверенные адреса, то так лучше
+              )
+
+
 # подключение сигналов
 pre_save.connect(check_lessons_qty, sender=Lesson)
 set_views.connect(incr_views)
-
+course_enroll.connect(send_enroll_email)
 #следы посещений страниц (в третий раз целенеправленно тыкал в один курс 5 раз
 #'views'
 #{'1': 2, '11': 1, '12': 2, '13': 1, '15': 1, '18': 2, '19': 1, '2': 4}

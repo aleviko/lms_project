@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <header>
+        <div class="describer">
+            <div class="title"><h2 translate="no">Безымянка</h2></div>
+            <div class="role">онлайн-курсы</div>
+        </div>
+    </header>
+<main>
+    {% block content %}
+    <div><p>Здравствуйте!</p>
+        <p> На платформу Безымянка</p>
+        <p><a href="{{ request.scheme }}://{{ request.META.HTTP_HOST}}"></a></p>
+        <p>{{ message|linebreaksbr }}</p>
+<!--        |linebreaksbr преобразует \n в <br> и оорачивает текст в параграф-->
+        <p>Провожающие, будте осторожны!</p>
+        <a href="{{ request.scheme }}://{{request.META.HTTP_HOST }}{% url 'password_reset' %}">
+            Если вошли не вы, срочно сбросьте пароль!
+        </a>
+    </div>
+    {% endblock %}
+</main>
+</body>
+</html>

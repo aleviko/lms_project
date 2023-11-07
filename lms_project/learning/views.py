@@ -20,7 +20,7 @@ from .models import Lesson  # получить доступ к таблице у
 from .models import Tracking, Review
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
 from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm, SettingForm  # классы генерации форм
-from .signals import set_views
+from .signals import set_views, course_enroll
 
 class MainView(ListView, FormView):  # список курсов
     # доступ всем
@@ -151,6 +151,9 @@ def enroll(request, course_id):
         records = [Tracking(lesson=lesson, user=request.user, passed=False) for lesson in lessons]
         # массовая запись заготовок в таблицу
         Tracking.objects.bulk_create(records)
+        # отправка уведомления о подписке
+        course_enroll.send(sender=Tracking, request=request, course_id=course_id)
+
         return HttpResponse('Запись на курс прошла успешно')
         # return HttpResponse(f'Запись на курс с id={course_id}')
 

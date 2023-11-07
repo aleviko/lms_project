@@ -185,8 +185,15 @@ LOGIN_URL = 'login'  # перенаправление неавторизован
 LOGIN_REDIRECT_URL = 'index'  # перенаправление после успешной авторизации
 LOGOUT_URL = 'logout'  # перенаправление после выхода пользователя с сайта
 
-# для ИМИТАЦИИ отправки эл.почты при восстановлении пароля выводом в КОНСОЛЬ
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # в консоль
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"  # в папку
-EMAIL_FILE_PATH = "/home/a1/PycharmProjects/tmps"  # если в папку, то указывать обязательно полный абсолютный путь к папке
+# для отправки эл.почты при восстановлении пароля
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # в консоль
+EMAIL_HOST = 'smtp.jino.ru'  # SMTP сервер
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # 'lms@aleviko.ru'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # 'lms987#@GHdf'
+EMAIL_USE_TLS = True  # EMAIL_USE_SSL = True
+EMAIL_PORT = 587  # EMAIL_PORT = 465
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # для вставки в письма в сигналах. а напрямую чем хуже?
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # имитация выводм в консоль
+#EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"  # ...в папку
+#EMAIL_FILE_PATH = "/home/a1/PycharmProjects/tmps"  # если в папку, то указывать обязательно полный абсолютный путь к папке
 PASSWORD_RESET_TIMEOUT_DAYS = 1  # срок годности ссылки для восстановления пароля (приблизительно в сутках) - найти способ вставить его в письмо

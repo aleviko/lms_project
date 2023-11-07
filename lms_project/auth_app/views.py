@@ -8,6 +8,7 @@ from django.conf import settings
 from datetime import datetime
 from .models import User
 from .forms import LoginForm, RegisterForm
+from .signals import account_access #send_login_user_email #, account_access
 
 # Create your views here.
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
@@ -26,6 +27,10 @@ class UserLoginView(LoginView):
             # в итоге нас будут помнить ~год с последнего логина
         elif is_remember == 'off':
             self.request.session.set_expiry(0)  # сессия существует до закрытия браузера
+
+        # отправка email оповещения на почту
+        account_access.send(sender=self.__class__, request=self.request)
+
         return super(UserLoginView, self).form_valid(form)
 
 
