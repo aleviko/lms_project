@@ -24,6 +24,7 @@ urlpatterns = [
     path('remove_booking/<int:course_id>/', remove_booking, name='remove_booking'),
     path('favourites/', FavouriteView.as_view(), name='favourites'),
     path('settings/', SettingFormView.as_view(), name='settings'),
+    path('get_certificate/', get_certificate_view, name='get_certificate'),
 ]
 # Параметр name=... позволяет применять обратный поиск адресов (по имени маршрута формируется адрес)
 # <int:course_id> - параметр, передаваемый контроллеру (тип:имя).

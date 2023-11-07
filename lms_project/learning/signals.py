@@ -1,6 +1,6 @@
 from django.db.models.signals import pre_save
 from django.dispatch import Signal
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.template.loader import render_to_string
 from .models import Course, Lesson
@@ -9,7 +9,7 @@ from .models import Course, Lesson
 
 set_views = Signal()  # самодельный сигнал для подсчета посещений
 course_enroll = Signal()  # запись на курс
-
+get_certificate = Signal()  # запрос документа
 
 def check_lessons_qty(sender, instance, **kwargs):
     error = None
@@ -51,11 +51,26 @@ def send_enroll_email(**kwargs):
               fail_silently=False  # валиться в ошибку при неотправке. если не спамим на непроверенные адреса, то так лучше
               )
 
+def send_user_certificate(**kwargs):
+    template_name = 'emails/certificate_email.html'
+    context = {
+        'message': 'Поздравляем с успешным окончанием курса!'
+        '\nСертификат находится во вложении'
+    }
+    email = EmailMultiAlternatives(subject='Сертификат о прохождении курса | Платформа Безымянка',
+                                   to=[kwargs['sender'].email])
+    email.attach_alternative(render_to_string(template_name, context), mimetype='text/html')
+    # print(settings.MEDIA_ROOT + '/certificates/certificate.png')  # у меня на / упорно ругается, заменил на +
+    email.attach_file(path=settings.MEDIA_ROOT + '/certificates/certificate.png', mimetype='image/png') # path=абсолютный путь
+    email.send(fail_silently=True)
+
+
 
 # подключение сигналов
 pre_save.connect(check_lessons_qty, sender=Lesson)
 set_views.connect(incr_views)
 course_enroll.connect(send_enroll_email)
+get_certificate.connect(send_user_certificate)
 #следы посещений страниц (в третий раз целенеправленно тыкал в один курс 5 раз
 #'views'
 #{'1': 2, '11': 1, '12': 2, '13': 1, '15': 1, '18': 2, '19': 1, '2': 4}

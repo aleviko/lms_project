@@ -1,4 +1,6 @@
 VPS 195.161.62.165
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # 'lms@aleviko.ru'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # 'lms987#@GHdf'
 ===
 Подтянуть домой наделанное на работе:
 [a1@Comp2 ~]$ cd /home/a1/PycharmProjects/lms_project/

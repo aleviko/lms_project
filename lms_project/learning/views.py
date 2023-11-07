@@ -20,7 +20,7 @@ from .models import Lesson  # получить доступ к таблице у
 from .models import Tracking, Review
 # request содержит объект текущего запроса, указывать обязательно, несмотря на предупреждения
 from .forms import CourseForm, ReviewForm, LessonForm, OrderByAndSearchForm, SettingForm  # классы генерации форм
-from .signals import set_views, course_enroll
+from .signals import set_views, course_enroll, get_certificate
 
 class MainView(ListView, FormView):  # список курсов
     # доступ всем
@@ -190,6 +190,12 @@ def remove_booking(request, course_id):
         request.session.get('favourites').remove(course_id)
         request.session.modified = True
     return redirect(reverse('index'))
+
+
+@login_required
+def get_certificate_view(request):
+    get_certificate.send(sender=request.user)
+    return HttpResponse('Сертификат отправлен на Ваш email')
 
 
 class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
