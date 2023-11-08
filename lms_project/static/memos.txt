@@ -6,7 +6,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # 'lms987#@GHdf'
 [a1@Comp2 ~]$ cd /home/a1/PycharmProjects/lms_project/
 [a1@Comp2 lms_project]$ git pull https://github.com/aleviko/lms_project
 ===
-Вытянуть все домой из репозитория:
+Вытянуть все домой/на сервер из репозитория:
 cd <куда-нибудь в свободное место>
 git clone https://github.com/aleviko/lms_project
 затереть старые локальные файлы и положить на их место клона
@@ -91,3 +91,24 @@ transaction.atomic()
 
 set_autocommit(True/False), get_autocommit, commit, savepoint(?id?), savepoint_commit(id),
 rollback, savepoint_rollback(id), clean_savepoints
+===
+Кеширование
+...в БД:
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
+    }
+}
+python manage.py createcachetable
+...Редиской:
+запустить сервер: # service redis start
+потрогать клиентом: $ redis-cli
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/0',
+    }
+}
+127.0.0.1:6379 - адрес, можно взять из клиента
+/0 - номер БД, тут можно фантазировать

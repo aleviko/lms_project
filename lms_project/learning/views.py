@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required  
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # добавки с доп.функционалом
 # LoginRequiredMixin - аналог декоратора login_required? PermissionRequiredMixin - ...
 from django.core.exceptions import NON_FIELD_ERRORS  # сообщения об ошибках заполнения формы в общем по форме
+from django.core.cache import cache, caches  # caches - словарь настроек из setting.py
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render  # рендеринг шаблона
 from django.shortcuts import redirect  # переадресация на заданную страницу
@@ -31,7 +32,12 @@ class MainView(ListView, FormView):  # список курсов
     form_class = OrderByAndSearchForm
 
     def get_queryset(self):
-        queryset = MainView.queryset
+        if 'courses' in cache:  # используем default сервер кеширования
+            queryset = cache.get('courses')  # а почему не get_or_set - будет меньше писанины?
+        else:
+            queryset = MainView.queryset
+            cache.set('courses', queryset, timeout=30)  # вот и закешили на 30сек. None = вечно, 0 = не хранить
+
         if {'search', 'price_order'} != self.request.GET.keys():
             return queryset  # если не поиск и не сортировка, то вернуть все записи
         else:
@@ -72,6 +78,7 @@ class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
             course = form.save()
             course.authors.add(self.request.user)  # привязка автора (authors = many:many)
             course.save()  # ...автор дописывается
+            cache.delete('courses')  # вытряхнуть кеш, чтобы зрители считали новый курс из БД
             return super(CourseCreateView, self).form_valid(form)
 
 
@@ -96,6 +103,13 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = ('learning.delete_course',)  # доступ только при наличии прав learning.delete_course
     # незалогинненных перенаправляет на логин, бесправным выдает 403 Forbidden
 
+    def form_valid(self, form):
+        #cache.delete('courses')  # вытряхнуть кеш, чтобы зрители ощутили удаление из БД
+        course_id = self.kwargs.get('course_id')
+
+        cache.delete_many(['courses', f'course_{course_id}_lessons']) #вытряхнуть сразу и курсы и уроки
+        return super(CourseDeleteView, self).form_valid(form)
+
     def get_queryset(self):
         return Course.objects.filter(id=self.kwargs.get('course_id'))
 
@@ -109,7 +123,12 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
     pk_url_kwarg = 'course_id'  # указываем, как называется первичный ключ
 
     def get_queryset(self):
-        return Lesson.objects.select_related('course').filter(course=self.kwargs.get('course_id'))  # типа оптимизация,
+        course_id = self.kwargs.get('course_id')
+        queryset = cache.get_or_set(f'course_{course_id}_lessons',
+            Lesson.objects.select_related('course').filter(course=course_id),
+            timeout=200)  # по умолчанию timeout=300
+        return queryset
+        #без кеширования: return Lesson.objects.select_related('course').filter(course=self.kwargs.get('course_id'))  # типа оптимизация,
         # чтобы выдача двух полей из одной записи не производилась двумя отдельными селектами:
         # заходим со стороны детей и за счет .select_related получаем поля родительской записи тоже
         # возможна только при связях 1:1 или 1:м
