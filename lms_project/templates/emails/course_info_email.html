@@ -14,10 +14,10 @@
     </header>
 <main>
     {% block content %}
-    {#<p>{{ message }}</p>#}  <!--Хочется с форматированием, а через  message  все превращается в текст-->
-    <div><p>Здравствуйте!</p>
-        <p><a href="{{ request.scheme }}://{{ request.META.HTTP_HOST}}{{ course.get_absolute_url}}">
-                Вы записались на курс: {{ course.title }}
+    <p>{{ message }}</p>
+    <div>
+        <p><a href="http://localhost:8000{{ course.get_absolute_url}}">
+                Новый курс: {{ course.title }}
         </a></p>
         {% with authors=course.authors.all %}
             {% if authors|length == 1 %}
