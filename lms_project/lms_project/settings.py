@@ -192,8 +192,23 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # 'lms@aleviko.ru'
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # 'lms987#@GHdf'
 EMAIL_USE_TLS = True  # EMAIL_USE_SSL = True
 EMAIL_PORT = 587  # EMAIL_PORT = 465
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # для вставки в письма в сигналах. а напрямую чем хуже?
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST_USER  # для вставки в письма в сигналах. а напрямую чем хуже?
+#SERVER_EMAIL для рассылки через send_mass_mail
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # имитация выводм в консоль
 #EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"  # ...в папку
 #EMAIL_FILE_PATH = "/home/a1/PycharmProjects/tmps"  # если в папку, то указывать обязательно полный абсолютный путь к папке
+# список админов для рассылки через send_mass_mail - зачем оно нам сейчас? и почему не по списку юзеров?
+ADMINS = [
+    ('Admin1Name', 'admin1@site.fun'),
+    ('Admin2Name', 'admin2@site.fun'),
+]
+# список менеджеров для рассылки через send_mass_mail - зачем оно нам сейчас? и почему не по списку юзеров?
+MANAGERS = [
+    ('Manager1Name', 'mul1@site.fun'),
+    ('Manager2Name', 'mul2@site.fun'),
+]
+
+
+
+
 PASSWORD_RESET_TIMEOUT_DAYS = 1  # срок годности ссылки для восстановления пароля (приблизительно в сутках) - найти способ вставить его в письмо

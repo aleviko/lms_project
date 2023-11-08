@@ -1,6 +1,7 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import Signal, receiver
 from django.core.mail import send_mail, EmailMultiAlternatives, get_connection, EmailMessage
+# from django.core.mail import send_mass_mail - поизучать, как докрутить до ума
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
