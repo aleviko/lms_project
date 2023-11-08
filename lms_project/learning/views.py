@@ -104,9 +104,10 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     # незалогинненных перенаправляет на логин, бесправным выдает 403 Forbidden
 
     def form_valid(self, form):
+        # впечатление такое, что тут вообще ничего не работает
         #cache.delete('courses')  # вытряхнуть кеш, чтобы зрители ощутили удаление из БД
         course_id = self.kwargs.get('course_id')
-
+        #print(f'deleting course id={course_id}')
         cache.delete_many(['courses', f'course_{course_id}_lessons']) #вытряхнуть сразу и курсы и уроки
         return super(CourseDeleteView, self).form_valid(form)
 
@@ -114,6 +115,10 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return Course.objects.filter(id=self.kwargs.get('course_id'))
 
     def get_success_url(self):
+        # пробую чистить кеши тута %)
+        course_id = self.kwargs.get('course_id')
+        cache.delete_many(['courses', f'course_{course_id}_lessons']) #вытряхнуть сразу и курсы и уроки
+        # ога: вот тута усё замечательно пашет! НО НЕ ВСЕГДА :))))....
         return reverse('index')
 
 

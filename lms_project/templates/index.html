@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load cache %}
 {% block content %}
     <div class="index">
     <form class="courses_filter" id="form" method="get">
@@ -8,6 +9,8 @@
     </form>
 
     <div class="courses_container">
+        {% cache 300 course_short_info request.user %}
+<!--        Такое кеширование не мешает фаворитам?-->
         {% comment 'Все до endcomment будет считаться комментарием' %}
         {% now 'd.m.Y H:i:s' %}  <!--отображение текущей даты и времени Если указать формат непосредственно, то работает-->
         {% now 'SHORT_DATETIME_FORMAT' %}  <!--а так - упорно без секунд. Перезапуск всего и вся не помог. Загадка...-->
@@ -31,13 +34,14 @@
                         </form>
                     </div>
                 {% endif %}
-                <p>| {{ course.start_date|date:"j E, l" }} |</p>  <!--отображение даты в формате "день МесяцПрописью ДеньНеделиПрописью"-->
-                <p> {{ course.description|capfirst|truncatechars:40 }} ({{ course.description|wordcount }} слов)| </p>
+                <p> {{ course.start_date|date:"j E, l" }} </p>  <!--отображение даты в формате "день МесяцПрописью ДеньНеделиПрописью"-->
+                <p> {{ course.description|capfirst|truncatechars:40 }} ({{ course.description|wordcount }} слов) </p>
                 <p> <span class="price">{{ course.price|default:"Бесплатно" }} р.</span> </p>
             </div>
         {% empty %}
             <p>Курсов пока нет</p>
         {% endfor %}
+        {% endcache %}
     </div>
     <div>
         <span>

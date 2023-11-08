@@ -51,7 +51,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',    # порядок важен!
+    'django.middleware.common.CommonMiddleware',        # порядок важен!
+    'django.middleware.cache.FetchFromCacheMiddleware',    # порядок важен!
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -61,13 +63,14 @@ MIDDLEWARE = [
 ]
 
 # Настройки сессий
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # хранить сессии в БД - для серьезных систем удобнее и быстрее
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'  # хранить сессии в кеше - еще быстрее
+SESSION_CACHE_ALIAS = 'session_store'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # хранить сессии в БД - для серьезных систем удобнее и быстрее
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'  # хранить сессии в кеше сервера - для макс.производительности
-
 # SESSION_ENGINE = 'django.contrib.sessions.backends.file'  # хранить сессии в ФС - для разгрузки дохлых серверов БД
 # SESSION_FILE_PATH = BASE_DIR / 'session' # папка для файлов сессий, если хранить сессии в ФС
 
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = True - бесполезно, т.к. браузер может перекрыть своими настройками
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True # бесполезно, т.к. браузер может перекрыть своими настройками
 # SESSION_COOKIE_AGE = 30  # время жизни сессии в секундах (независимо от закрытия браузера и простоя) - уже полезнее, но неудобно - нужен таймаут по простою.
 # И я НЕ ЗАМЕТИЛ, что работает (Firefox, запоминание учеток включено - т.е. тоже ненадежно
 # полезные варианты см.: https://stackoverflow.com/questions/14830669/how-to-expire-django-session-in-5minutes
@@ -127,8 +130,15 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': 'redis://127.0.0.1:6379/0',
+    },
+    'session_store': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
     }
 }
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = 60 * 10   # время жизни кеша всего сайта, сек.
+CACHE_MIDDLEWARE_PREFIX = 'codeby'  # префикс сайта в кеше, если кеш используется несколькими сайтами
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
