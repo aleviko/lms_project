@@ -15,12 +15,11 @@
 <main>
     {% block content %}
     <div><p>Здравствуйте!</p>
-        <p> На платформу Безымянка</p>
-        <p><a href="{{ request.scheme }}://{{ request.META.HTTP_HOST}}"></a></p>
-        <p>{{ message|linebreaksbr }}</p>
-<!--        |linebreaksbr преобразует \n в <br> и оорачивает текст в параграф-->
+        <p>На платформу Безымянка</p>
+        {{ message|linebreaksbr }}
+        <!--|linebreaksbr преобразует \n в <br> и оборачивает текст в параграф-->
         <p>Провожающие, будте осторожны!</p>
-        <a href="{{ request.scheme }}://{{request.META.HTTP_HOST }}{% url 'password_reset' %}">
+        <a href="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'password_reset' %}">
             Если вошли не вы, срочно сбросьте пароль!
         </a>
     </div>
