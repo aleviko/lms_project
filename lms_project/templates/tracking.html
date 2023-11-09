@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="tracking_container">
+    <div>Прогресс обучения</div>
+    {% regroup tracks by header as track_group %}
+
+    {% for title, tracking in track_group %}
+        <div class="tracking_group">
+            <div class="tracking_group_name">
+                <div><a href="{% url 'detail' tracks.0.lesson.course.pk %}">{{ title|capfirst }}</a></div>
+                <!--по логике и в ПДФнике - tracks, а в видео trackings?-->
+                <div>
+                    <form id="form" method="post" action="{% url 'get_certificate' tracks.0.lesson.course.pk %}">
+                    {% csrf_token %}
+                    <input type="submit" value="Сертификат">
+                    </form>
+                </div>
+                <div>
+                    <button class="fa fa-arrow-circle-down" style="color:grey" title="Подробнее"
+                        onclick="showTracking(this, {{ forloop.counter }}">
+
+                    </button>
+                </div>
+            </div>
+            <div id="{{ forloop.counter }}" class="tracking_lessons" style="display:none">
+                {% for tr in tracking_set %}
+                    {% if tr.passed %}
+                        <div>
+                            <i class="fa fa-check-circle-o" style="color:green" title="Успешно пройден"></i>
+                            {{ tr.lesson.name }}
+                        </div>
+                    {% else %}
+                        <div>
+                            <i class="fa fa-check-circle-o" style="color:grey" title="Предстоит пройти"></i>
+                            {{ tr.lesson.name }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+    {% empty %}
+        <p>Пока не пройдено ни одного <a href="{% url 'index' %} ">курса </a></p>
+    {% endfor %}
+
+</div>
+{% endblock %}

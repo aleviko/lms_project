@@ -10,7 +10,7 @@ from django.views.generic import ListView  # извлекает набор за�
 from django.views.generic import DetailView  # извлекает одну запись из таблицы в контекстные переменные для последующей вставки шаблон
 # имя шаблона должно оканчиваться на "_detail"
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, F, Sum, Count
 from django.views.generic import CreateView, UpdateView, DeleteView, FormView  #
 # from django.urls.base import reverse # в уроке 7 этого нет, но без него реверс валит в ошибку
 from django.shortcuts import reverse  # появилось в уроке 8
@@ -161,6 +161,18 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
         return super(CourseDetailView, self).get(request, *args, **kwargs)
 
 
+class TrackingView(ListView, LoginRequiredMixin):
+    mode = Tracking
+    template_name = 'tracking.html'
+    context_object_name = 'tracks'
+
+    def get_queryset(self):
+        queryset = Tracking.objects.select_related('lesson')\
+            .filter(user=self.request.user)\
+            .annotate(header=F('lesson__course__title'))
+        return queryset
+
+
 @login_required
 @permission_required('learning.add_tracking', raise_exception=True)
 @transaction.atomic()  # включение атомарной транзакции конкретно для этого контроллера
@@ -177,8 +189,8 @@ def enroll(request, course_id):
         Tracking.objects.bulk_create(records)
         # отправка уведомления о подписке
         course_enroll.send(sender=Tracking, request=request, course_id=course_id)
-
-        return HttpResponse('Запись на курс прошла успешно')
+        return redirect('tracking')
+        #return HttpResponse('Запись на курс прошла успешно')
         # return HttpResponse(f'Запись на курс с id={course_id}')
 
 
@@ -217,9 +229,16 @@ def remove_booking(request, course_id):
 
 
 @login_required
-def get_certificate_view(request):
-    get_certificate.send(sender=request.user)
-    return HttpResponse('Сертификат отправлен на Ваш email')
+def get_certificate_view(request, course_id):
+    # count_passed = Tracking.objects.filter(lesson__course=id, user=request.user)\
+    #     .aggregate(total_passed=Count('lesson_course'), fact_passed=Sum('passed'))
+    # count_passed = Tracking.objects.filter(lesson__course=course_id, user=request.user)\
+    #     .aggregate(total_passed=Count('lesson_course'), fact_passed=Sum('passed'))
+    if True: #count_passed['total_passed'] == count_passed['fact_passed']:
+        get_certificate.send(sender=request.user)
+        return HttpResponse('Сертификат отправлен на Ваш email')
+    else:
+        return HttpResponse('Этот курс еще не пройден')
 
 
 class LessonCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):

@@ -1,0 +1,27 @@
+===Привязка третьей таблицы это...а если надо будет десять связать? Хотя бы авторов курса подтянуть?
+
+(venv) [a1@localhost lms_project]$ python manage.py debugsqlshell
+>>> from django.db.models import F
+>>> from learning.models import Tracking
+>>> tr = Tracking.objects.select_related('lesson').filter(user=2).annotate(header=F('lesson__course__title'))
+>>> tr
+SELECT `learning_tracking`.`id`,
+       `learning_tracking`.`lesson_id`,
+       `learning_tracking`.`user_id`,
+       `learning_tracking`.`passed`,
+       `learning_course`.`title` AS `header`,
+       `learning_lesson`.`id`,
+       `learning_lesson`.`course_id`,
+       `learning_lesson`.`name`,
+       `learning_lesson`.`preview`
+FROM `learning_tracking`
+INNER JOIN `auth_app_user` ON (`learning_tracking`.`user_id` = `auth_app_user`.`id`) # а это вот зачем???
+INNER JOIN `learning_lesson` ON (`learning_tracking`.`lesson_id` = `learning_lesson`.`id`)
+INNER JOIN `learning_course` ON (`learning_lesson`.`course_id` = `learning_course`.`id`)
+WHERE `learning_tracking`.`user_id` = 2
+ORDER BY `auth_app_user`.`last_name` DESC
+LIMIT 21 [1.28ms]
+<QuerySet [<Tracking: Tracking object (76)>, <Tracking: Tracking object (77)>, <Tracking: Tracking object (78)>, <Tracking: Tracking object (79)>]>
+>>>
+===
+

@@ -64,8 +64,7 @@ def send_user_certificate(**kwargs):
     email = EmailMultiAlternatives(subject='Сертификат о прохождении курса | Платформа Безымянка',
                                    to=[kwargs['sender'].email])
     email.attach_alternative(render_to_string(template_name, context), mimetype='text/html')
-    # print(settings.MEDIA_ROOT + '/certificates/certificate.png')  # у меня на / упорно ругается, заменил на +
-    email.attach_file(path=settings.MEDIA_ROOT + '/certificates/certificate.png', mimetype='image/png')  # path=абсолютный путь
+    email.attach_file(path=settings.MEDIA_ROOT / 'certificates/certificate.png', mimetype='image/png')  # path=абсолютный путь
     email.send(fail_silently=True)
 
 

@@ -44,7 +44,7 @@
                     {% endspaceless %}
                 </ol>
                 {% endwith %}  <!-- до конца блока with переменная count_lessons будет существовать -->
-                <form method="post" action="{% url 'enroll' course_var.pk %}">
+                <form id="enroll_form" method="post" action="{% url 'enroll' course_var.pk %}">
                     <!-- Токен для защиты от подделки межсайтовых запросов -->
                     {% csrf_token %}
                     <!-- без него обработка формы завершится ошибкой "403...SCRF запрос отклонен -->
