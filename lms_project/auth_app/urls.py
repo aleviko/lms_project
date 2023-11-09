@@ -4,7 +4,7 @@ from django.contrib.auth.views import (PasswordResetView, PasswordResetDoneView,
     PasswordResetConfirmView, PasswordResetCompleteView,
     PasswordChangeView, PasswordChangeDoneView)
 
-
+from django.views.decorators.cache import cache_control
 from django.urls import path
 from .views import *
 
@@ -13,8 +13,8 @@ from .views import *
 # представления для этих путей см. во views.py
 
 urlpatterns = [
-    path('login/', UserLoginView.as_view(), name='login'),
-    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', cache_control(private=True)(UserLoginView.as_view()), name='login'),
+    path('register/', cache_control(private=True) (RegisterView.as_view()), name='register'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     # смена пароля
     path('password-change/', PasswordChangeView.as_view(), name='password_change'),  # предопределенное имя шаблона: password_change_form
