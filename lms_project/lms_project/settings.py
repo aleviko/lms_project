@@ -189,7 +189,7 @@ STATICFILES_DIRS = [
 # ## В шаблоне такой секции не было
 # Media files
 #MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # путь на стороне сервера к папке с загруженными файлами
-MEDIA_ROOT = BASE_DIR / 'media' # новый вариант (а старый я сам придумал?)
+MEDIA_ROOT = BASE_DIR / 'media' # новый вариант (а старый кто придумал?)
 MEDIA_URL = '/media/'  # базовый адрес для формирования ссылок на загружаемые файлы
 
 # Default primary key field type
