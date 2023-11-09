@@ -6,12 +6,14 @@
     {% regroup tracks by header as track_group %}
 
     {% for title, tracking in track_group %}
+<!--    for title, tracking in track_group-->
         <div class="tracking_group">
             <div class="tracking_group_name">
-                <div><a href="{% url 'detail' tracks.0.lesson.course.pk %}">{{ title|capfirst }}</a></div>
-                <!--по логике и в ПДФнике - tracks, а в видео trackings?-->
+                <div><a href="{% url 'detail' tracking.0.lesson.course.pk %}">{{ title|capfirst }}:</a></div>
+                <!--<p>title: {{ title }}  tracking:{{ tracking }}</p>-->
+                <!--по логике и в ПДФнике - tracks, а в видео trackings?  и не tracks.0.lesson.course.pk-->
                 <div>
-                    <form id="form" method="post" action="{% url 'get_certificate' tracks.0.lesson.course.pk %}">
+                    <form id="form" method="post" action="{% url 'get_certificate' tracking.0.lesson.course.pk %}">
                     {% csrf_token %}
                     <input type="submit" value="Сертификат">
                     </form>

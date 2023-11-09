@@ -108,19 +108,12 @@ WSGI_APPLICATION = 'lms_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-'''DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': 'localhost',
-        'USER': os.environ.get('USER_DB'),  # 'lms_user',  # окружение барахлит, пока константой
-        'PASSWORD': os.environ.get('PASSWORD_DB'),  # '111',  # окружение барахлит, пока константой
+        'USER': os.environ.get('USER_DB'),  # 'lms_user'
+        'PASSWORD': os.environ.get('PASSWORD_DB'),  # '111'
         'NAME': 'lms_db',  # назвал по-своему, утомила уже путаница в одинаковых именах
         'ATOMIC_REQUEST': True,  # заключить в транзакцию время работы контроллера
     }
@@ -137,7 +130,7 @@ CACHES = {
     }
 }
 CACHE_MIDDLEWARE_ALIAS = 'default'
-CACHE_MIDDLEWARE_SECONDS = 60 * 10   # время жизни кеша всего сайта, сек.
+CACHE_MIDDLEWARE_SECONDS = 60 #* 10   # время жизни кеша всего сайта, сек. Похоже сильно мешает работать (страницы подолгу не обновляются)
 CACHE_MIDDLEWARE_PREFIX = 'codeby'  # префикс сайта в кеше, если кеш используется несколькими сайтами
 
 # Password validation

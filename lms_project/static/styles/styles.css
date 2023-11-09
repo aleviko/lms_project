@@ -309,14 +309,15 @@ input, textarea {
 .tracking_container{
     display: flex;
     flex-direction: column;
-    margin: 3% 7% 2% 1%
+    margin: 3% 7% 2% 1%;
+    width: 90%; /**/
 }
 .tracking_group{
     border: 1px solid grey;
     border-radius: 35px;
     margin: 2% 0;
     padding: 3% 10%;
-    width: 150%
+    /*width: 150%;*/
 }
 .tracking_group_name{
     display: flex;

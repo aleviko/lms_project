@@ -104,10 +104,8 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     # незалогинненных перенаправляет на логин, бесправным выдает 403 Forbidden
 
     def form_valid(self, form):
-        # впечатление такое, что тут вообще ничего не работает
         #cache.delete('courses')  # вытряхнуть кеш, чтобы зрители ощутили удаление из БД
         course_id = self.kwargs.get('course_id')
-        #print(f'deleting course id={course_id}')
         cache.delete_many(['courses', f'course_{course_id}_lessons']) #вытряхнуть сразу и курсы и уроки
         return super(CourseDeleteView, self).form_valid(form)
 
@@ -115,10 +113,6 @@ class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return Course.objects.filter(id=self.kwargs.get('course_id'))
 
     def get_success_url(self):
-        # пробую чистить кеши тута %)
-        course_id = self.kwargs.get('course_id')
-        cache.delete_many(['courses', f'course_{course_id}_lessons']) #вытряхнуть сразу и курсы и уроки
-        # ога: вот тута усё замечательно пашет! НО НЕ ВСЕГДА :))))....
         return reverse('index')
 
 
@@ -230,11 +224,14 @@ def remove_booking(request, course_id):
 
 @login_required
 def get_certificate_view(request, course_id):
-    # count_passed = Tracking.objects.filter(lesson__course=id, user=request.user)\
-    #     .aggregate(total_passed=Count('lesson_course'), fact_passed=Sum('passed'))
+    print(f'course_id={course_id}, request.user={request.user}, request.user.pk={request.user.pk}')
     # count_passed = Tracking.objects.filter(lesson__course=course_id, user=request.user)\
     #     .aggregate(total_passed=Count('lesson_course'), fact_passed=Sum('passed'))
-    if True: #count_passed['total_passed'] == count_passed['fact_passed']:
+    # в видео опять косяк. работает вот так:
+    count_passed = Tracking.objects.filter(lesson__course=course_id, user=request.user)\
+        .aggregate(total_passed=Count('lesson_id'), fact_passed=Sum('passed'))
+    print(f'count_passed={count_passed}')
+    if count_passed['total_passed'] == count_passed['fact_passed']:
         get_certificate.send(sender=request.user)
         return HttpResponse('Сертификат отправлен на Ваш email')
     else:

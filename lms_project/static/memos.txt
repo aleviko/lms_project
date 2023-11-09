@@ -46,6 +46,8 @@ if rec_exists:
     print('В курсе: ' + rec.title + ' Найдено уроков: ' + str(rec.lesson_set.count()) + ': ')
     rec.lesson_set.all()
 ===
+from django.db.models import Q, F, Sum, Count
+from learning.models import Course
 >>> for c in Course.objects.filter(title__contains='кофе'):
 ...     print(c.title, c.price)
 for c in Course.objects.exclude(price__lte=10): # NOT в SQL запросе
@@ -57,6 +59,7 @@ for c in Course.objects.values('title', 'price'):
 c = Course.objects.values_list('title', 'price')
 c = Course.objects.values_list('title', flat=True)
 c = Course.objects.in_bulk(['кошкин дом', 'Жарка яичницы'], field_name='title')
+
 
 from django.db.models import F - непойми зачем нужная фигня
 
