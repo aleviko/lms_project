@@ -13,9 +13,11 @@
                 <!--<p>title: {{ title }}  tracking:{{ tracking }}</p>-->
                 <!--по логике и в ПДФнике - tracks, а в видео trackings?  и не tracks.0.lesson.course.pk-->
                 <div>
-                    <form id="form" method="post" action="{% url 'get_certificate' tracking.0.lesson.course.pk %}">
+                    <form id="form" method="post" action="{% url 'get_certificate' tracking.0.lesson.course.pk %}"
+                    style="width: 130%; padding: 0; text-align: center; border: none;">
                     {% csrf_token %}
-                    <input type="submit" value="Сертификат">
+                    <input type="submit" value="Сертификат"
+                           style="width: 90%; padding: 0; border: 2px solid #fa9405; border-radius: 40px">
                     </form>
                 </div>
                 <div>

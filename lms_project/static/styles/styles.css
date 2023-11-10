@@ -315,9 +315,8 @@ input, textarea {
 .tracking_group{
     border: 1px solid grey;
     border-radius: 35px;
-    margin: 2% 0;
-    padding: 3% 10%;
-    /*width: 150%;*/
+    margin: 1% 0;
+    padding: 0 10%;
 }
 .tracking_group_name{
     display: flex;
