@@ -21,10 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')  # ПРОДАКШН: держать в переменной. ОТЛАДКА: 'django-insecure-osmnvaebrl#9+bs-s^#6r7q8_w=wtbu)x3b=5q-_n6_2svcupe'
+#SECRET_KEY = os.environ.get('SECRET_KEY')  # ПРОДАКШН: держать в переменной. ОТЛАДКА: 'django-insecure-osmnvaebrl#9+bs-s^#6r7q8_w=wtbu)x3b=5q-_n6_2svcupe'
+SECRET_KEY = 'django-insecure-osmnvaebrl#9+bs-s^#6r7q8_w=wtbu)x3b=5q-_n6_2svcupe'  # ОТЛАДКА
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False #True
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']  # ПРОДАКШН: адрес реального сервера
 
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
     'auth_app.apps.AuthAppConfig',
     'learning.apps.LearningConfig',
     # Утилиты
-    #'debug_toolbar',  # ПРОДАКШН: закомментить # django. указывать не надо и через _!
+    'debug_toolbar',  # ПРОДАКШН: закомментить # django. указывать не надо и через _!
 
 ]
 
@@ -58,7 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Утилиты
-    #'debug_toolbar.middleware.DebugToolbarMiddleware', # ПРОДАКШН: закомментить # django. указывать не надо и через _!
+    'debug_toolbar.middleware.DebugToolbarMiddleware', # ПРОДАКШН: закомментить # django. указывать не надо и через _!
 ]
 
 # Настройки сессий
@@ -75,7 +76,7 @@ SESSION_CACHE_ALIAS = 'session_store'
 # полезные варианты см.: https://stackoverflow.com/questions/14830669/how-to-expire-django-session-in-5minutes
 
 # SESSION_SAVE_EVERY_REQUEST = True
-#SESSION_COOKIE_SECURE = True  # доступ к кукам только по https, при отладке должно мешать
+#SESSION_COOKIE_SECURE = True  # ПРОДАКШН # доступ к кукам только по https, при отладке должно мешать
 SESSION_COOKIE_SAMESITE = 'Strict'  # запрет на отправку сторонним сайтам/'None' - разрешить всегда / 'Lax' - при переходе по ссылке
 
 # Настройки запоминания пользователя - не встроенные параметры, а наша самодеятельность
@@ -220,7 +221,7 @@ MANAGERS = [
 PASSWORD_RESET_TIMEOUT_DAYS = 1  # срок годности ссылки для восстановления пароля (приблизительно в сутках) - найти способ вставить его в письмо
 
 # Настройки для продуктива
-SECURE_SSL_REDIRECT = True
-CSRF_COOKIE_SECURE = True
-#SECURE_HSTS_SECONDS = 3600
+#SECURE_SSL_REDIRECT = True  # ПРОДАКШН
+#CSRF_COOKIE_SECURE = True   # ПРОДАКШН
+#SECURE_HSTS_SECONDS = 3600  # ПРОДАКШН 2
 

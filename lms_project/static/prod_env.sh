@@ -1,0 +1,5 @@
+export EMAIL_HOST_PASSWORD=lms987#@GHdf
+export EMAIL_HOST_USER=lms@aleviko.ru
+export USER_DB=codeby
+export PASSWORD_DB=xyz123abc987
+export SECRET_KEY=78hgBhj6mt2gjhvhJjhhjjvxGKkjagewyte24fvhjjjhgj4754y5g388hGGGghjhHHThgjktrrfrfhh

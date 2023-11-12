@@ -122,3 +122,4 @@ CACHES = {
 python manage.py runserver --insecure
 Проверка перед выгрузкой на сервер:
 python manage.py check --deploy
+pip freeze > requirements.txt
