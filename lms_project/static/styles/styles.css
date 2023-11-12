@@ -144,6 +144,10 @@ img {
 #form button hover {
     background: #fa9405bf;
 }
+#form .helptext {
+    font-size: 0.5em
+}
+
 .price {
     color: #0ba5189c;
     font-weight: bold;
@@ -306,17 +310,21 @@ input, textarea {
     margin-bottom: 2%;
 }
 /*Tracking*/
-.tracking_container{
+.tracking_container {
     display: flex;
     flex-direction: column;
     margin: 3% 7% 2% 1%;
     width: 90%; /**/
 }
-.tracking_group{
+.tracking_group {
     border: 1px solid grey;
     border-radius: 35px;
     margin: 1% 0;
     padding: 0 10%;
+}
+.tracking_group_buttons {
+    margin-left: auto;
+    padding: 0 50px;
 }
 .tracking_group_name{
     display: flex;

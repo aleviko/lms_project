@@ -18,6 +18,12 @@ from django.urls import path, include
 from django.conf import settings  # для доступа к значениям настроек из кода !в доках мелькает про повышение уязвимости сайта при этом - поизучать!
 from django.conf.urls.static import static  # создает маршрут к файлам !только в тестовом режиме сервера!
 
+
+# ссылки на обработчики ошибок. формат: handler<код ошибки>
+handler500 = 'lms_project.views.server_error'
+handler404 = 'lms_project.views.page_not_found'
+handler403 = 'lms_project.views.forbidden'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('auth_app.urls')),  # подключить вложенный список маршрутов из auth_app

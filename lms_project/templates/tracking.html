@@ -12,7 +12,7 @@
                 <div><a href="{% url 'detail' tracking.0.lesson.course.pk %}">{{ title|capfirst }}:</a></div>
                 <!--<p>title: {{ title }}  tracking:{{ tracking }}</p>-->
                 <!--по логике и в ПДФнике - tracks, а в видео trackings?  и не tracks.0.lesson.course.pk-->
-                <div>
+                <div class="tracking_group_buttons">
                     <form id="form" method="post" action="{% url 'get_certificate' tracking.0.lesson.course.pk %}"
                     style="width: 130%; padding: 0; text-align: center; border: none;">
                     {% csrf_token %}
@@ -28,7 +28,8 @@
                 </div>
             </div>
             <div id="{{ forloop.counter }}" class="tracking_lessons" style="display:none">
-                {% for tr in tracking_set %}
+                <!--в видео вроде был tracking_set-->
+                {% for tr in tracking %}
                     {% if tr.passed %}
                         <div>
                             <i class="fa fa-check-circle-o" style="color:green" title="Успешно пройден"></i>

@@ -156,7 +156,7 @@ class CourseDetailView(ListView):  # было CourseDetailView(DetailView):
 
 
 class TrackingView(ListView, LoginRequiredMixin):
-    mode = Tracking
+    model = Tracking
     template_name = 'tracking.html'
     context_object_name = 'tracks'
 

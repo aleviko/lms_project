@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}404{% endblock %}
+{% block content %}
+  <div class="main_container">
+      <div class="main_item">
+          <img src="{% static 'errors/404.jpg' %}" alt="Страница не найдена (404)" title="Ошибка 404">
+          <p>Страницы по указанному пути: <a href="#">{{ path }}</a> не существует</p>
+          <p>Пожалуйста, сообщите об этом в службу поддержки</p>
+      </div>
+  </div>
+{% endblock %}

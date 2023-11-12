@@ -21,15 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-osmnvaebrl#9+bs-s^#6r7q8_w=wtbu)x3b=5q-_n6_2svcupe'
+SECRET_KEY = os.environ.get('SECRET_KEY')  # ПРОДАКШН: держать в переменной. ОТЛАДКА: 'django-insecure-osmnvaebrl#9+bs-s^#6r7q8_w=wtbu)x3b=5q-_n6_2svcupe'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False #True
+
+ALLOWED_HOSTS = ['127.0.0.1']  # ПРОДАКШН: адрес реального сервера
 
 INTERNAL_IPS = ["127.0.0.1",]  # адреса, на обращения с к-рых будет отвечать django-debug-toolbar
-
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -44,7 +43,7 @@ INSTALLED_APPS = [
     'auth_app.apps.AuthAppConfig',
     'learning.apps.LearningConfig',
     # Утилиты
-    'debug_toolbar',  # django. указывать не надо и через _!
+    #'debug_toolbar',  # ПРОДАКШН: закомментить # django. указывать не надо и через _!
 
 ]
 
@@ -59,7 +58,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Утилиты
-    'debug_toolbar.middleware.DebugToolbarMiddleware',  # django. указывать не надо и через _!
+    #'debug_toolbar.middleware.DebugToolbarMiddleware', # ПРОДАКШН: закомментить # django. указывать не надо и через _!
 ]
 
 # Настройки сессий
@@ -130,7 +129,7 @@ CACHES = {
     }
 }
 CACHE_MIDDLEWARE_ALIAS = 'default'
-CACHE_MIDDLEWARE_SECONDS = 60 #* 10   # время жизни кеша всего сайта, сек. Похоже сильно мешает работать (страницы подолгу не обновляются)
+CACHE_MIDDLEWARE_SECONDS = 0 # 60 * 10   # время жизни кеша всего сайта, сек. Похоже сильно мешает работать (страницы подолгу не обновляются)
 CACHE_MIDDLEWARE_PREFIX = 'codeby'  # префикс сайта в кеше, если кеш используется несколькими сайтами
 
 # Password validation
@@ -218,7 +217,10 @@ MANAGERS = [
     ('Manager2Name', 'mul2@site.fun'),
 ]
 
-
-
-
 PASSWORD_RESET_TIMEOUT_DAYS = 1  # срок годности ссылки для восстановления пароля (приблизительно в сутках) - найти способ вставить его в письмо
+
+# Настройки для продуктива
+SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = True
+#SECURE_HSTS_SECONDS = 3600
+
