@@ -224,13 +224,13 @@ def remove_booking(request, course_id):
 
 @login_required
 def get_certificate_view(request, course_id):
-    print(f'course_id={course_id}, request.user={request.user}, request.user.pk={request.user.pk}')
+    # print(f'course_id={course_id}, request.user={request.user}, request.user.pk={request.user.pk}')
     # count_passed = Tracking.objects.filter(lesson__course=course_id, user=request.user)\
     #     .aggregate(total_passed=Count('lesson_course'), fact_passed=Sum('passed'))
     # в видео опять косяк. работает вот так:
     count_passed = Tracking.objects.filter(lesson__course=course_id, user=request.user)\
         .aggregate(total_passed=Count('lesson_id'), fact_passed=Sum('passed'))
-    print(f'count_passed={count_passed}')
+    # print(f'count_passed={count_passed}')
     if count_passed['total_passed'] == count_passed['fact_passed']:
         get_certificate.send(sender=request.user)
         return HttpResponse('Сертификат отправлен на Ваш email')

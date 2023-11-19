@@ -28,7 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('auth_app.urls')),  # подключить вложенный список маршрутов из auth_app
     path('courses/', include('learning.urls')),
-    path('__debug__', include('debug_toolbar.urls')),  # для отладки
+    path('__debug__', include('debug_toolbar.urls')),  # для отладки # ОТЛАДКА
 ]
 
 if settings.DEBUG:

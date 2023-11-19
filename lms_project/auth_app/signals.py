@@ -29,7 +29,7 @@ def grant_pupil_rights(sender, instance, created=True, **kwargs):
     if created:  # сразу после создания НОВОГО (created=True) юзера автоматом добавим его в группу "Ученики"
         pupil = Group.objects.filter(name='Ученики')
         instance.groups.set(pupil)
-        print(f'Пользователь {instance} добавлен в группу "Ученики"')
+        # print(f'Пользователь {instance} добавлен в группу "Ученики"')
 
 
 account_access.connect(send_login_user_email)
