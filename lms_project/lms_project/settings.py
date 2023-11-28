@@ -116,6 +116,9 @@ DATABASES = {
         'PASSWORD': os.environ.get('PASSWORD_DB'),  # '111'
         'NAME': 'lms_db',  # назвал по-своему, утомила уже путаница в одинаковых именах
         'ATOMIC_REQUEST': True,  # заключить в транзакцию время работы контроллера
+        'TEST': {
+            'NAME': 'lms_project_test',
+        },
     }
 }
 
