@@ -19,16 +19,20 @@ class AuthAppTestCase(TestCase):
 
     def setUp(self) -> None:
 
-        self.user_invalid_register_data = {  # тест на неправильный ввод - пароли не совпадают
-            'username': 'student@example.com',
-            'birthday': timezone.now().date(),
+        # тест на неправильный ввод - пароли не совпадают
+        self.user_invalid_register_data = {
+            'username': 'student',
+            'email': 'student@example.com',
+            'birthday': '01.01.2023', # timezone.now().date(),
             'password1': 'student1234',
             'password2': 'student4321'
         }
 
-        self.user_valid_register_data = {  # тест на правильный ввод
-            'username': 'student@example.com',
-            'birthday': timezone.now().date(),
+        # тест на правильный ввод
+        self.user_valid_register_data = {
+            'username': 'student',
+            'email': 'student@example.com',
+            'birthday': '01.01.2023', # timezone.now().date(),
             'password1': 'student1234',
             'password2': 'student1234'
         }
